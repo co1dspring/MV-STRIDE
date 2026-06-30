@@ -1,11 +1,416 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>MV-STRIDE</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MV-STRIDE</title>
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #222222;
+      --muted: #666666;
+      --primary: #2f6fef;
+      --primary-dark: #1f4fbf;
+      --card: #f7f8fa;
+      --border: #e5e7eb;
+      --code-bg: #f3f4f6;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    header {
+      padding: 56px 20px 36px;
+      text-align: center;
+      background: linear-gradient(180deg, #f2f6ff 0%, #ffffff 100%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      line-height: 1.2;
+      margin: 0 0 14px;
+      font-weight: 750;
+    }
+
+    h2 {
+      margin-top: 52px;
+      font-size: 1.7rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    h3 {
+      margin-top: 26px;
+      font-size: 1.2rem;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .authors {
+      margin: 14px auto 8px;
+      color: #333333;
+      max-width: 860px;
+    }
+
+    .authors a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .affiliations {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 24px;
+    }
+
+    .venue {
+      display: inline-block;
+      margin: 10px 0 22px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #eaf0ff;
+      color: var(--primary-dark);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 18px;
+      border-radius: 8px;
+      background: var(--primary);
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .button.secondary {
+      background: #111827;
+    }
+
+    .button.secondary:hover {
+      background: #000000;
+    }
+
+    main {
+      padding: 28px 0 60px;
+    }
+
+    .teaser {
+      width: 100%;
+      max-width: 920px;
+      display: block;
+      margin: 24px auto 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+    }
+
+    .caption {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-top: 8px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .card h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+
+    th {
+      background: var(--card);
+      font-weight: 700;
+    }
+
+    td:first-child, th:first-child {
+      text-align: left;
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 16px;
+      border-radius: 10px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .subtitle {
+        font-size: 1rem;
+      }
+
+      header {
+        padding-top: 38px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<h1>MV-STRIDE: Multi-View Spatial Reasoning</h1>
-<p>ECCV 2026 Project Page</p>
+  <header>
+    <div class="container">
+      <div class="venue">ECCV 2026</div>
+
+      <h1>MV-STRIDE: Enabling MLLMs to Master Multi-View Spatial Reasoning via Hierarchical Capability Modeling</h1>
+
+      <p class="subtitle">
+        A hierarchical multi-view spatial reasoning dataset and training framework for MLLMs.
+      </p>
+
+      <p class="authors">
+        <a href="#">Jin Xu</a><sup>*</sup>,
+        <a href="#">Xiang Huang</a>,
+        <a href="#">Zhihong Zhang</a>,
+        <a href="#">Zhuodong Li</a>,
+        <a href="#">Xuejin Chen</a>,
+        <a href="#">Jie Zhao</a>,
+        <a href="#">Xiaowei Liu</a>,
+        <a href="#">Xinzhi Wang</a>,
+        <a href="#">Jiansheng Wei</a>
+      </p>
+
+      <p class="affiliations">
+        Replace with affiliations · <sup>*</sup> Corresponding author
+      </p>
+
+      <div class="buttons">
+        <a class="button" href="paper.pdf">Paper</a>
+        <a class="button" href="supplementary.pdf">Supplementary</a>
+        <a class="button secondary" href="https://github.com/yourname/yourrepo">Code</a>
+        <a class="button secondary" href="#">Dataset</a>
+        <a class="button secondary" href="#bibtex">BibTeX</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section>
+      <img class="teaser" src="assets/teaser.png" alt="Overview of MV-STRIDE" />
+      <p class="caption">
+        Overview of MV-STRIDE. Replace <code>assets/teaser.png</code> with your actual teaser figure.
+      </p>
+    </section>
+
+    <section>
+      <h2>Abstract</h2>
+      <p>
+        Despite the rapid progress of Multimodal Large Language Models (MLLMs) in 2D vision-language tasks,
+        robust multi-view spatial reasoning remains a fundamental bottleneck. We introduce MV-STRIDE,
+        a hierarchical multi-view spatial reasoning dataset with interdependent and decomposed capabilities.
+        MV-STRIDE organizes spatial reasoning into single-view perception, cross-view understanding,
+        and high-level contextual reasoning, providing a structured learning pathway for MLLMs.
+        Extensive experiments demonstrate that training with MV-STRIDE substantially improves spatial
+        reasoning performance across multiple benchmarks.
+      </p>
+    </section>
+
+    <section>
+      <h2>Highlights</h2>
+      <div class="card-grid">
+        <div class="card">
+          <h3>Hierarchical Capability Modeling</h3>
+          <p>
+            We decompose multi-view spatial reasoning into three levels, from single-view perception
+            to cross-view scene understanding and high-level contextual reasoning.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Cross-View Dependency</h3>
+          <p>
+            Level III questions are designed to require integration across multiple views,
+            reducing single-view shortcuts and encouraging 3D-consistent reasoning.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Scalable QA Generation</h3>
+          <p>
+            MV-STRIDE uses 3D-grounded scene annotations to generate large-scale, structured,
+            and verifiable multi-view spatial reasoning data.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Strong Benchmark Performance</h3>
+          <p>
+            Models trained with MV-STRIDE achieve consistent improvements on multiple spatial
+            reasoning benchmarks.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Method Overview</h2>
+      <p>
+        MV-STRIDE follows a cognition-driven construction pipeline. We first extract camera and object
+        annotations from 3D scene assets, then apply view and object filtering to ensure valid spatial
+        reasoning tasks. Based on these annotations, we generate hierarchical QA pairs and construct
+        long-chain reasoning supervision for high-level multi-view tasks.
+      </p>
+
+      <img class="teaser" src="assets/pipeline.png" alt="MV-STRIDE construction pipeline" />
+      <p class="caption">
+        MV-STRIDE construction pipeline. Replace <code>assets/pipeline.png</code> with your actual method figure.
+      </p>
+    </section>
+
+    <section>
+      <h2>Results</h2>
+      <p>
+        MV-STRIDE improves spatial reasoning performance across multiple benchmarks.
+        The table below is a placeholder; replace it with your final numbers.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>MMSI-Bench</th>
+            <th>CV-Bench</th>
+            <th>ViewSpatial</th>
+            <th>3DSRBench</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Base Model</td>
+            <td>29.20</td>
+            <td>84.31</td>
+            <td>40.51</td>
+            <td>59.98</td>
+          </tr>
+          <tr>
+            <td><strong>MV-STRIDE</strong></td>
+            <td><strong>38.90</strong></td>
+            <td><strong>86.73</strong></td>
+            <td><strong>48.35</strong></td>
+            <td><strong>64.51</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Dataset</h2>
+      <p>
+        The dataset, annotations, and generation scripts will be released here.
+      </p>
+      <p class="note">
+        Replace this section with the final release information, license, download link, and usage instructions.
+      </p>
+    </section>
+
+    <section id="bibtex">
+      <h2>BibTeX</h2>
+      <pre><code>@inproceedings{xu2026mvstride,
+  title     = {MV-STRIDE: Enabling MLLMs to Master Multi-View Spatial Reasoning via Hierarchical Capability Modeling},
+  author    = {Xu, Jin and Huang, Xiang and Zhang, Zhihong and Li, Zhuodong and Chen, Xuejin and Zhao, Jie and Liu, Xiaowei and Wang, Xinzhi and Wei, Jiansheng},
+  booktitle = {European Conference on Computer Vision},
+  year      = {2026}
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Contact</h2>
+      <p>
+        For questions, please contact:
+        <a href="mailto:your_email@example.com">your_email@example.com</a>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      This website is adapted for a GitHub Pages project page.
+      Last updated: 2026.
+    </p>
+  </footer>
 </body>
 </html>
