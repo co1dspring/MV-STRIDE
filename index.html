@@ -3,229 +3,528 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MV-STRIDE</title>
+  <meta name="description" content="MV-STRIDE: a hierarchical dataset and training framework for multi-view spatial reasoning in multimodal large language models." />
+  <title>MV-STRIDE | ECCV 2026</title>
 
   <style>
     :root {
       --bg: #ffffff;
-      --text: #222222;
-      --muted: #666666;
-      --primary: #2f6fef;
-      --primary-dark: #1f4fbf;
-      --card: #f7f8fa;
-      --border: #e5e7eb;
-      --code-bg: #f3f4f6;
+      --surface: #f6f8fc;
+      --surface-strong: #edf3ff;
+      --text: #172033;
+      --muted: #5d687c;
+      --primary: #2767b0;
+      --primary-dark: #174a87;
+      --teal: #278f91;
+      --green: #5b953a;
+      --gold: #bc8a00;
+      --border: #dfe5ef;
+      --shadow: 0 12px 30px rgba(28, 54, 92, 0.08);
+      --radius: 18px;
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       color: var(--text);
+      background: var(--bg);
       line-height: 1.65;
     }
 
-    header {
-      padding: 56px 20px 36px;
-      text-align: center;
-      background: linear-gradient(180deg, #f2f6ff 0%, #ffffff 100%);
-      border-bottom: 1px solid var(--border);
+    a {
+      color: inherit;
     }
 
     .container {
-      max-width: 980px;
+      width: min(1120px, calc(100% - 40px));
       margin: 0 auto;
-      padding: 0 20px;
     }
 
-    h1 {
-      font-size: 2.4rem;
-      line-height: 1.2;
-      margin: 0 0 14px;
-      font-weight: 750;
-    }
-
-    h2 {
-      margin-top: 52px;
-      font-size: 1.7rem;
+    header {
+      padding: 58px 0 44px;
+      text-align: center;
+      background:
+        radial-gradient(circle at 16% 15%, rgba(39, 103, 176, 0.12), transparent 28%),
+        radial-gradient(circle at 86% 0%, rgba(39, 143, 145, 0.10), transparent 25%),
+        linear-gradient(180deg, #f4f8ff 0%, #ffffff 100%);
       border-bottom: 1px solid var(--border);
-      padding-bottom: 8px;
-    }
-
-    h3 {
-      margin-top: 26px;
-      font-size: 1.2rem;
-    }
-
-    .subtitle {
-      font-size: 1.15rem;
-      color: var(--muted);
-      margin-bottom: 18px;
-    }
-
-    .authors {
-      margin: 14px auto 8px;
-      color: #333333;
-      max-width: 860px;
-    }
-
-    .authors a {
-      color: var(--primary);
-      text-decoration: none;
-    }
-
-    .affiliations {
-      color: var(--muted);
-      font-size: 0.95rem;
-      margin-bottom: 24px;
     }
 
     .venue {
-      display: inline-block;
-      margin: 10px 0 22px;
-      padding: 6px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
       border-radius: 999px;
-      background: #eaf0ff;
+      background: #e7effd;
       color: var(--primary-dark);
-      font-weight: 600;
-      font-size: 0.95rem;
+      font-weight: 750;
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      max-width: 1040px;
+      margin: 20px auto 14px;
+      font-size: clamp(2.15rem, 4.7vw, 3.85rem);
+      line-height: 1.12;
+      letter-spacing: -0.035em;
+    }
+
+    .subtitle {
+      max-width: 850px;
+      margin: 0 auto 22px;
+      font-size: 1.16rem;
+      color: var(--muted);
+    }
+
+    .authors {
+      max-width: 980px;
+      margin: 0 auto 10px;
+      font-size: 1.02rem;
+      line-height: 1.9;
+    }
+
+    .authors span {
+      white-space: nowrap;
+    }
+
+    .affiliations {
+      max-width: 900px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 0.94rem;
+      line-height: 1.8;
+    }
+
+    sup {
+      color: var(--primary-dark);
+      font-weight: 700;
     }
 
     .buttons {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 10px;
-      margin-top: 16px;
+      gap: 11px;
+      margin-top: 26px;
     }
 
     .button {
-      display: inline-block;
-      padding: 10px 18px;
-      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 112px;
+      padding: 11px 18px;
+      border: 1px solid transparent;
+      border-radius: 10px;
       background: var(--primary);
-      color: white;
+      color: #ffffff;
       text-decoration: none;
-      font-weight: 600;
-      transition: background 0.2s ease, transform 0.2s ease;
+      font-weight: 750;
+      cursor: pointer;
+      transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
     }
 
     .button:hover {
+      transform: translateY(-2px);
       background: var(--primary-dark);
-      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(39, 103, 176, 0.18);
     }
 
     .button.secondary {
-      background: #111827;
+      background: #1d2637;
     }
 
     .button.secondary:hover {
-      background: #000000;
+      background: #080c13;
+    }
+
+    .button.outline {
+      color: var(--primary-dark);
+      background: #ffffff;
+      border-color: #aac1df;
     }
 
     main {
-      padding: 28px 0 60px;
+      padding: 28px 0 72px;
     }
 
-    .teaser {
-      width: 100%;
-      max-width: 920px;
+    section {
+      scroll-margin-top: 24px;
+    }
+
+    h2 {
+      margin: 64px 0 16px;
+      font-size: clamp(1.7rem, 3vw, 2.35rem);
+      letter-spacing: -0.02em;
+    }
+
+    .section-lead {
+      max-width: 900px;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .media-placeholder {
+      min-height: 370px;
+      margin: 26px 0 10px;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      border: 2px dashed #b8c8df;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #f7faff, #ffffff);
+      color: #718099;
+      text-align: center;
+    }
+
+    .media-placeholder strong {
       display: block;
-      margin: 24px auto 10px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: #ffffff;
+      margin-bottom: 5px;
+      color: var(--primary-dark);
+      font-size: 1.08rem;
     }
 
     .caption {
+      margin: 8px auto 0;
       text-align: center;
       color: var(--muted);
-      font-size: 0.95rem;
-      margin-top: 8px;
+      font-size: 0.92rem;
     }
+
+    .project-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 26px auto 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #ffffff;
+      box-shadow: var(--shadow);
+    }
+
 
     .card-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-      margin-top: 18px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 24px;
     }
 
     .card {
-      background: var(--card);
+      padding: 22px;
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 18px;
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
     }
 
     .card h3 {
-      margin-top: 0;
+      margin: 0 0 8px;
+      font-size: 1.15rem;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .level-card {
+      padding: 22px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: #ffffff;
+      box-shadow: var(--shadow);
+    }
+
+    .level-card:nth-child(1) {
+      border-top: 5px solid var(--gold);
+    }
+
+    .level-card:nth-child(2) {
+      border-top: 5px solid var(--teal);
+    }
+
+    .level-card:nth-child(3) {
+      border-top: 5px solid var(--green);
+    }
+
+    .level-label {
+      display: inline-block;
       margin-bottom: 8px;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .step {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #ffffff;
+      box-shadow: var(--shadow);
+    }
+
+    .step-number {
+      display: inline-grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      margin-bottom: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #ffffff;
+      font-weight: 800;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .stat {
+      padding: 18px 12px;
+      text-align: center;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: var(--surface);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.55rem;
+      color: var(--primary-dark);
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .validation-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .score-box {
+      padding: 20px;
+      text-align: center;
+      border-radius: 14px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+    }
+
+    .score-box strong {
+      display: block;
+      font-size: 2rem;
+      color: var(--primary-dark);
+    }
+
+    .arrow {
+      font-size: 1.8rem;
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    .takeaway {
+      margin-top: 14px;
+      padding: 15px 17px;
+      border-left: 5px solid var(--green);
+      border-radius: 10px;
+      background: #f1f8ec;
+      color: #31511f;
+      font-weight: 650;
+    }
+
+    .training-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .training-card {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #ffffff;
+      box-shadow: var(--shadow);
+    }
+
+    .training-card h3 {
+      margin: 0 0 10px;
+    }
+
+    .training-card p {
+      margin: 7px 0;
+      color: var(--muted);
+    }
+
+    .training-card b {
+      color: var(--text);
+    }
+
+    .table-wrap {
+      margin-top: 22px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
     }
 
     table {
       width: 100%;
+      min-width: 760px;
       border-collapse: collapse;
-      margin-top: 18px;
       font-size: 0.95rem;
+      background: #ffffff;
     }
 
-    th, td {
-      padding: 10px 12px;
+    th,
+    td {
+      padding: 12px 14px;
       border-bottom: 1px solid var(--border);
       text-align: center;
     }
 
     th {
-      background: var(--card);
-      font-weight: 700;
+      background: #eaf1fb;
+      color: var(--primary-dark);
+      font-weight: 800;
     }
 
-    td:first-child, th:first-child {
+    th:first-child,
+    td:first-child {
       text-align: left;
     }
 
-    pre {
-      background: var(--code-bg);
-      padding: 16px;
-      border-radius: 10px;
-      overflow-x: auto;
-      border: 1px solid var(--border);
-      font-size: 0.9rem;
+    tbody tr:last-child td {
+      border-bottom: 0;
     }
 
-    code {
-      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 24px 20px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.95rem;
+    tbody tr.highlight {
+      background: #f0f6ff;
+      font-weight: 750;
     }
 
     .note {
       color: var(--muted);
-      font-size: 0.95rem;
+      font-size: 0.93rem;
     }
 
-    @media (max-width: 640px) {
-      h1 {
-        font-size: 1.8rem;
+    pre {
+      padding: 18px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #111827;
+      color: #e8edf7;
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    footer {
+      padding: 28px 20px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--muted);
+      background: #f8fafc;
+      font-size: 0.92rem;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      z-index: 1000;
+      min-width: 220px;
+      padding: 13px 18px;
+      border-radius: 12px;
+      color: #ffffff;
+      background: #111827;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      opacity: 0;
+      transform: translate(-50%, 18px);
+      pointer-events: none;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @media (max-width: 900px) {
+      .card-grid,
+      .level-grid,
+      .steps,
+      .training-grid,
+      .validation-grid {
+        grid-template-columns: 1fr;
       }
 
-      .subtitle {
-        font-size: 1rem;
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .media-placeholder {
+        min-height: 260px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .container {
+        width: min(100% - 24px, 1120px);
       }
 
       header {
-        padding-top: 38px;
+        padding-top: 40px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .comparison {
+        grid-template-columns: 1fr;
+      }
+
+      .arrow {
+        transform: rotate(90deg);
       }
     }
   </style>
@@ -239,178 +538,300 @@
       <h1>MV-STRIDE: Enabling MLLMs to Master Multi-View Spatial Reasoning via Hierarchical Capability Modeling</h1>
 
       <p class="subtitle">
-        A hierarchical multi-view spatial reasoning dataset and training framework for MLLMs.
+        A cognition-driven dataset and training framework that organizes spatial abilities from single-view perception to multi-view contextual reasoning.
       </p>
 
       <p class="authors">
-        <a href="#">Jin Xu</a><sup>*</sup>,
-        <a href="#">Xiang Huang</a>,
-        <a href="#">Zhihong Zhang</a>,
-        <a href="#">Zhuodong Li</a>,
-        <a href="#">Xuejin Chen</a>,
-        <a href="#">Jie Zhao</a>,
-        <a href="#">Xiaowei Liu</a>,
-        <a href="#">Xinzhi Wang</a>,
-        <a href="#">Jiansheng Wei</a>
+        <span>Jin Xu<sup>1</sup></span>,
+        <span>Xiaojian Huang<sup>1</sup></span>,
+        <span>Zhuodong Luo<sup>1</sup></span>,
+        <span>Zhihong Zhang<sup>1</sup></span>,
+        <span>Xin Liu<sup>2</sup></span>,
+        <span>Jiansheng Wei<sup>2</sup></span>,
+        <span>Xinzhi Wang<sup>2</sup></span>,
+        <span>Jie Zhao<sup>3,*</sup></span>,
+        <span>Xuejin Chen<sup>1,*</sup></span>
       </p>
 
       <p class="affiliations">
-        Replace with affiliations · <sup>*</sup> Corresponding author
+        <sup>1</sup> MoE Key Laboratory of Brain-inspired Intelligent Perception and Cognition, University of Science and Technology of China, China<br />
+        <sup>2</sup> Huawei Noah's Ark Lab<br />
+        <sup>3</sup> Hefei University of Technology, China<br />
+        <sup>*</sup> Corresponding authors
       </p>
 
       <div class="buttons">
         <a class="button" href="paper.pdf">Paper</a>
-        <a class="button" href="supplementary.pdf">Supplementary</a>
-        <a class="button secondary" href="https://github.com/yourname/yourrepo">Code</a>
-        <a class="button secondary" href="#">Dataset</a>
-        <a class="button secondary" href="#bibtex">BibTeX</a>
+        <a class="button outline" href="supplementary.pdf">Supplementary</a>
+        <a class="button secondary" href="#" data-coming-soon="Code">Code</a>
+        <a class="button secondary" href="#" data-coming-soon="Dataset">Dataset</a>
+        <a class="button outline" href="#bibtex">BibTeX</a>
       </div>
     </div>
   </header>
 
   <main class="container">
-    <section>
-      <img class="teaser" src="assets/teaser.png" alt="Overview of MV-STRIDE" />
-      <p class="caption">
-        Overview of MV-STRIDE. Replace <code>assets/teaser.png</code> with your actual teaser figure.
-      </p>
+    <section aria-label="Teaser">
+      <div class="media-placeholder">
+        <div>
+          <strong>Teaser image placeholder</strong>
+          Insert the paper overview figure here: <code>assets/teaser.png</code>
+        </div>
+      </div>
+      <p class="caption">MV-STRIDE organizes multi-view spatial reasoning into three capability levels with explicit cross-level dependencies.</p>
     </section>
 
-    <section>
-      <h2>Abstract</h2>
-      <p>
-        Despite the rapid progress of Multimodal Large Language Models (MLLMs) in 2D vision-language tasks,
-        robust multi-view spatial reasoning remains a fundamental bottleneck. We introduce MV-STRIDE,
-        a hierarchical multi-view spatial reasoning dataset with interdependent and decomposed capabilities.
-        MV-STRIDE organizes spatial reasoning into single-view perception, cross-view understanding,
-        and high-level contextual reasoning, providing a structured learning pathway for MLLMs.
-        Extensive experiments demonstrate that training with MV-STRIDE substantially improves spatial
-        reasoning performance across multiple benchmarks.
+    <section id="overview">
+      <h2>Overview</h2>
+      <p class="section-lead">
+        Current MLLMs perform well on many single-image spatial tasks, yet still struggle to integrate evidence across viewpoints and maintain a consistent 3D understanding. MV-STRIDE addresses this bottleneck from the data side by replacing flat task collections with a hierarchical, capability-dependent organization of multi-view spatial reasoning supervision.
       </p>
-    </section>
 
-    <section>
-      <h2>Highlights</h2>
       <div class="card-grid">
-        <div class="card">
+        <article class="card">
           <h3>Hierarchical Capability Modeling</h3>
-          <p>
-            We decompose multi-view spatial reasoning into three levels, from single-view perception
-            to cross-view scene understanding and high-level contextual reasoning.
-          </p>
-        </div>
-
-        <div class="card">
-          <h3>Cross-View Dependency</h3>
-          <p>
-            Level III questions are designed to require integration across multiple views,
-            reducing single-view shortcuts and encouraging 3D-consistent reasoning.
-          </p>
-        </div>
-
-        <div class="card">
-          <h3>Scalable QA Generation</h3>
-          <p>
-            MV-STRIDE uses 3D-grounded scene annotations to generate large-scale, structured,
-            and verifiable multi-view spatial reasoning data.
-          </p>
-        </div>
-
-        <div class="card">
-          <h3>Strong Benchmark Performance</h3>
-          <p>
-            Models trained with MV-STRIDE achieve consistent improvements on multiple spatial
-            reasoning benchmarks.
-          </p>
-        </div>
+          <p>Spatial tasks are organized into three progressive levels, covering single-view perception, cross-view scene understanding, and high-level contextual reasoning.</p>
+        </article>
+        <article class="card">
+          <h3>Capability Dependency Modeling</h3>
+          <p>Cross-level task dependencies connect prerequisite perception and scene-understanding skills to complex multi-view reasoning problems.</p>
+        </article>
       </div>
     </section>
 
-    <section>
-      <h2>Method Overview</h2>
-      <p>
-        MV-STRIDE follows a cognition-driven construction pipeline. We first extract camera and object
-        annotations from 3D scene assets, then apply view and object filtering to ensure valid spatial
-        reasoning tasks. Based on these annotations, we generate hierarchical QA pairs and construct
-        long-chain reasoning supervision for high-level multi-view tasks.
+    <section id="method">
+      <h2>Hierarchical Spatial Reasoning</h2>
+      <p class="section-lead">
+        MV-STRIDE follows a perception–modeling–reasoning hierarchy and explicitly links tasks across levels to form spatial cognition process question groups.
       </p>
 
-      <img class="teaser" src="assets/pipeline.png" alt="MV-STRIDE construction pipeline" />
-      <p class="caption">
-        MV-STRIDE construction pipeline. Replace <code>assets/pipeline.png</code> with your actual method figure.
-      </p>
+      <div class="level-grid">
+        <article class="level-card">
+          <span class="level-label">Level I</span>
+          <h3>Single-View Spatial Perception</h3>
+          <p>Build reliable egocentric spatial awareness through object location, depth, size, camera pitch, and other view-level geometric attributes.</p>
+        </article>
+        <article class="level-card">
+          <span class="level-label">Level II</span>
+          <h3>Cross-View Scene Understanding</h3>
+          <p>Bridge isolated views through object correspondence, camera motion, viewpoint transformation, and 3D object localization.</p>
+        </article>
+        <article class="level-card">
+          <span class="level-label">Level III</span>
+          <h3>Multi-View Contextual Reasoning</h3>
+          <p>Perform high-level reasoning over multiple reference frames, including counting, orientation, virtual perspective, and positional relations.</p>
+        </article>
+      </div>
     </section>
 
-    <section>
-      <h2>Results</h2>
-      <p>
-        MV-STRIDE improves spatial reasoning performance across multiple benchmarks.
-        The table below is a placeholder; replace it with your final numbers.
+    <section id="pipeline">
+      <h2>Dataset Construction Pipeline</h2>
+      <p class="section-lead">
+        The pipeline transforms synthetic and reconstructed 3D scenes into geometrically grounded, hierarchical multi-view QA data and long-chain reasoning supervision.
       </p>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Model</th>
-            <th>MMSI-Bench</th>
-            <th>CV-Bench</th>
-            <th>ViewSpatial</th>
-            <th>3DSRBench</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Base Model</td>
-            <td>29.20</td>
-            <td>84.31</td>
-            <td>40.51</td>
-            <td>59.98</td>
-          </tr>
-          <tr>
-            <td><strong>MV-STRIDE</strong></td>
-            <td><strong>38.90</strong></td>
-            <td><strong>86.73</strong></td>
-            <td><strong>48.35</strong></td>
-            <td><strong>64.51</strong></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="media-placeholder">
+        <div>
+          <strong>Construction pipeline placeholder</strong>
+          Insert the paper pipeline figure here: <code>assets/pipeline.png</code>
+        </div>
+      </div>
+
+      <div class="steps">
+        <article class="step">
+          <span class="step-number">1</span>
+          <h3>3D-Grounded QA Generation</h3>
+          <p>Extract camera and object annotations from Infinigen and ScanNet++, then generate QA pairs with verifiable geometric answers.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">2</span>
+          <h3>Cross-View Dependency Constraints</h3>
+          <p>Filter questions so that the required evidence is distributed across views, reducing shortcuts that can be solved from one image.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">3</span>
+          <h3>Cognition-Guided CoT Generation</h3>
+          <p>Compose prerequisite Level I and Level II sub-questions into structured reasoning supervision for Level III tasks.</p>
+        </article>
+      </div>
     </section>
 
-    <section>
-      <h2>Dataset</h2>
-      <p>
-        The dataset, annotations, and generation scripts will be released here.
+    <section id="dataset">
+      <h2>Dataset at a Glance</h2>
+      <div class="stats">
+        <div class="stat"><strong>600+</strong><span>Synthetic and real indoor environments</span></div>
+        <div class="stat"><strong>313.8K</strong><span>Hierarchical QA pairs for Stage 1</span></div>
+        <div class="stat"><strong>18</strong><span>Spatial task categories</span></div>
+        <div class="stat"><strong>19.0K</strong><span>CoT annotations for cold start</span></div>
+        <div class="stat"><strong>24.8K</strong><span>Reasoning samples for RL</span></div>
+      </div>
+
+      <div class="validation-grid">
+        <article class="card">
+          <h3>Quality Verification</h3>
+          <p>Sampled checks report an overall pass rate of <strong>88.0%</strong> for QA pairs and <strong>97.5%</strong> for CoT annotations, indicating reliable large-scale generation with limited noise.</p>
+        </article>
+
+        <article class="card">
+          <h3>Cross-View Dependency Validation</h3>
+          <div class="comparison">
+            <div class="score-box">
+              <strong>31.5%</strong>
+              Random single view
+            </div>
+            <div class="arrow">→</div>
+            <div class="score-box">
+              <strong>41.2%</strong>
+              Full multi-view input
+            </div>
+          </div>
+          <div class="takeaway">A +9.7-point gain shows that the filtered Level III questions rely more strongly on cross-view evidence and reduce single-view shortcuts.</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="training">
+      <h2>Progressive Training Strategy</h2>
+      <p class="section-lead">
+        MV-STRIDE supports both direct-answer spatial capability learning and structured long-chain reasoning.
       </p>
+
+      <div class="training-grid">
+        <article class="training-card">
+          <h3>Stage 1 · SFT</h3>
+          <p><b>Data:</b> Level I–III QA pairs with direct-answer supervision.</p>
+          <p><b>Goal:</b> Establish spatial perception, cross-view understanding, and multi-view reasoning foundations.</p>
+        </article>
+        <article class="training-card">
+          <h3>Stage 2 · Cold Start</h3>
+          <p><b>Data:</b> CoT annotations synthesized from cross-level spatial cognition question groups.</p>
+          <p><b>Goal:</b> Teach structured reasoning patterns and long-chain output formats.</p>
+        </article>
+        <article class="training-card">
+          <h3>Stage 3 · RL</h3>
+          <p><b>Data:</b> Difficulty-filtered multi-view reasoning problems for GRPO.</p>
+          <p><b>Goal:</b> Explore and refine diverse reasoning paths while balancing accuracy and interpretability.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="results">
+      <h2>Main Results</h2>
+      <p class="section-lead">
+        Training with MV-STRIDE consistently improves spatial reasoning across single-view, multi-view, and 3D-aware benchmarks. The full-data SFT setting provides a strong accuracy-oriented baseline, while progressive training targets structured reasoning behavior.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>MMSI-Bench</th>
+              <th>CV-Bench</th>
+              <th>ViewSpatial-Bench</th>
+              <th>3DSRBench</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Qwen3-VL-8B (Base)</td>
+              <td>29.20</td>
+              <td>84.31</td>
+              <td>40.51</td>
+              <td>59.98</td>
+            </tr>
+            <tr class="highlight">
+              <td>MV-STRIDE-SFT (Full-data SFT)</td>
+              <td>38.90</td>
+              <td>86.73</td>
+              <td>48.35</td>
+              <td>64.51</td>
+            </tr>
+            <tr>
+              <td>MV-STRIDE-SFT (Stage 1)</td>
+              <td>37.20</td>
+              <td>86.39</td>
+              <td>50.28</td>
+              <td>65.52</td>
+            </tr>
+            <tr>
+              <td>MV-STRIDE-ColdStart (Stage 2)</td>
+              <td>36.70</td>
+              <td>85.94</td>
+              <td>47.30</td>
+              <td>61.08</td>
+            </tr>
+            <tr>
+              <td>MV-STRIDE-RL (Stage 3)</td>
+              <td>37.50</td>
+              <td>85.94</td>
+              <td>49.30</td>
+              <td>59.43</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
       <p class="note">
-        Replace this section with the final release information, license, download link, and usage instructions.
+        Full-data SFT pools the available data for direct-answer SFT. Stage 1–3 follow the progressive QA → CoT → RL route and optimize a different objective, so benchmark accuracy is not expected to improve monotonically across stages.
       </p>
+
+      <div class="card-grid">
+        <article class="card">
+          <h3>Strong Spatial Reasoning Gains</h3>
+          <p>Full-data SFT improves MMSI-Bench by 9.7 points over the base model and remains competitive across all four benchmarks.</p>
+        </article>
+        <article class="card">
+          <h3>Backbone-Agnostic Effectiveness</h3>
+          <p>Additional experiments show consistent improvements across Qwen3-VL models of different scales and the MiMo-VL architecture.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="qualitative">
+      <h2>Qualitative Reasoning</h2>
+      <p class="section-lead">
+        Cold-start and RL training encourage the model to produce structured reasoning that progresses from view-level perception to cross-view modeling and high-level spatial inference.
+      </p>
+      <div class="media-placeholder">
+        <div>
+          <strong>Qualitative result placeholder</strong>
+          Insert a representative reasoning example here: <code>assets/qualitative.png</code>
+        </div>
+      </div>
     </section>
 
     <section id="bibtex">
       <h2>BibTeX</h2>
       <pre><code>@inproceedings{xu2026mvstride,
   title     = {MV-STRIDE: Enabling MLLMs to Master Multi-View Spatial Reasoning via Hierarchical Capability Modeling},
-  author    = {Xu, Jin and Huang, Xiang and Zhang, Zhihong and Li, Zhuodong and Chen, Xuejin and Zhao, Jie and Liu, Xiaowei and Wang, Xinzhi and Wei, Jiansheng},
+  author    = {Xu, Jin and Huang, Xiaojian and Luo, Zhuodong and Zhang, Zhihong and Liu, Xin and Wei, Jiansheng and Wang, Xinzhi and Zhao, Jie and Chen, Xuejin},
   booktitle = {European Conference on Computer Vision},
   year      = {2026}
 }</code></pre>
     </section>
-
-    <section>
-      <h2>Contact</h2>
-      <p>
-        For questions, please contact:
-        <a href="mailto:your_email@example.com">your_email@example.com</a>
-      </p>
-    </section>
   </main>
 
   <footer>
-    <p>
-      This website is adapted for a GitHub Pages project page.
-      Last updated: 2026.
-    </p>
+    MV-STRIDE · ECCV 2026 · Project page last updated in 2026
   </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Coming soon</div>
+
+  <script>
+    const toast = document.getElementById('toast');
+    let toastTimer;
+
+    document.querySelectorAll('[data-coming-soon]').forEach((element) => {
+      element.addEventListener('click', (event) => {
+        event.preventDefault();
+        const item = element.dataset.comingSoon;
+        toast.textContent = `${item} release: coming soon`;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+      });
+    });
+  </script>
 </body>
 </html>
