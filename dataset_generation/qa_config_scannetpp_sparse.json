@@ -1,0 +1,192 @@
+{
+  "qa_types": {
+    "Attribute(Appr.)_Counting": {
+      "function_name": "_attribute_appr_counting_qa",
+      "flipping_enhancement": false,
+      "max_qa_per_cams": 1,
+      "sampling_rate": 1
+    },
+    "Attribute(Appr.)_Orientation": {
+      "function_name": "_attribute_appr_orientation_qa",
+      "flipping_enhancement": false,
+      "max_qa_per_cams": 1,
+      "sampling_rate": 1
+    },
+    "Attribute(Meas.)": {
+      "function_name": "_attribute_meas_qa",
+      "flipping_enhancement": false,
+      "max_qa_per_cams": 1,
+      "sampling_rate": 1
+    },
+    "Motion(Cam.)_Translation": {
+      "function_name": "_motion_cam_translation_qa",
+      "flipping_enhancement": false,
+      "max_qa_per_cams": 1,
+      "sampling_rate": 1
+    },
+    "Motion(Cam.)_Rotation": {
+      "function_name": "_motion_cam_rotation_qa",
+      "flipping_enhancement": true,
+      "max_qa_per_cams": 1,
+      "sampling_rate": 1
+    },
+    "Positional Relationship(Cam.-Cam.)_Translation": {
+      "function_name": "_positional_relationship_cam_cam_translation_qa",
+      "flipping_enhancement": false,
+      "max_qa_per_cams": 2,
+      "sampling_rate": 0.5
+    },
+    "Positional Relationship(Cam.-Cam.)_Rotation": {
+      "function_name": "_positional_relationship_cam_cam_rotation_qa",
+      "flipping_enhancement": false,
+      "max_qa_per_cams": 1,
+      "sampling_rate": 1
+    },
+    "Positional Relationship(Cam.-Obj.)": {
+      "function_name": "_positional_relationship_cam_obj_qa",
+      "flipping_enhancement": false,
+      "max_qa_per_cams": 1,
+      "sampling_rate": 1
+    },
+    "Positional Relationship(Obj.-Obj.)": {
+      "function_name": "_positional_relationship_obj_obj_qa",
+      "flipping_enhancement": false,
+      "max_qa_per_cams": 1,
+      "sampling_rate": 1
+    },
+    "Positional Relationship(Obj.-Obj.)_Orientation": {
+      "function_name": "_positional_relationship_obj_obj_orientation_qa",
+      "flipping_enhancement": false,
+      "max_qa_per_cams": 1,
+      "sampling_rate": 1
+    },
+    "Positional Relationship(Obj.-Obj.)_Obj_in_options": {
+      "function_name": "_positional_relationship_obj_obj_obj_in_options_qa",
+      "flipping_enhancement": false,
+      "max_qa_per_cams": 1,
+      "sampling_rate": 1
+    },
+    "Positional Relationship(Obj.-Reg.)": {
+      "function_name": "_positional_relationship_obj_reg_qa",
+      "flipping_enhancement": false,
+      "max_qa_per_cams": 1,
+      "sampling_rate": 1
+    }
+  },
+  "msr_qa_types": {
+    "MSR_Cam": {
+      "function_name": "_msr_cam_qa",
+      "range": [3, 3],
+      "max_num": 5,
+      "sampling_rate": 1
+    },
+    "MSR_Cam_Obj": {
+      "function_name": "_msr_cam_obj_qa",
+      "range": [3, 5],
+      "max_num": 5,
+      "sampling_rate": 1
+    },
+    "MSR_Counting": {
+      "function_name": "_msr_counting_qa",
+      "range": [3, 6],
+      "max_num": 5,
+      "sampling_rate": 1
+    },
+    "MSR_Obj_Obj": {
+      "function_name": "_msr_obj_obj_qa",
+      "range": [3, 6],
+      "max_num": 5,
+      "sampling_rate": 1
+    }
+  },
+  "level2_qa_types": {
+    "Object_correspondence": {
+      "function_name": "_object_correspondence"
+    },
+    "Cam_rot_yaw": {
+      "function_name": "_cam_rot_yaw"
+    },
+    "Cam_rot_pitch": {
+      "function_name": "_cam_rot_pitch"
+    },
+    "Cam_trans_forward": {
+      "function_name": "_cam_trans_forward"
+    },
+    "Cam_trans_right": {
+      "function_name": "_cam_trans_right"
+    }
+  },
+  "level1_qa_types": {
+    "2D_location_perception_category": {
+      "function_name": "_2d_location_perception_category"
+    },
+    "2D_location_perception_object": {
+      "function_name": "_2d_location_perception_object"
+    },
+    "Cam_obj_yaw": {
+      "function_name": "_cam_obj_yaw"
+    },
+    "Cam_space_pitch": {
+      "function_name": "_cam_space_pitch"
+    },
+    "Depth_perception": {
+      "function_name": "_depth_perception"
+    },
+    "Measurement_comparison": {
+      "function_name": "_measurement_comparison"
+    },
+    "3D_location_cam_obj": {
+      "function_name": "_3D_location_cam_obj"
+    }
+  },
+  "max_qa_per_cams_default": 1,
+  "max_msr_num_default": 10,
+  "if_flipping_enhencement_default": true,
+  "overall_sampling_rate": 1,
+  "source_data_dir": "D:/Data/scannetpp/scannetpp_sampled_modified",
+  "training_environment_base_dir": "/cache/xj/data/scannetpp_sampled_modified",
+  "version_name": "ScannetppIphone_MultilevelCategories_20260120_SparseSampled_MCA",
+  "output_dir": "../QA_jsons_{VERSION_NAME}",
+  "global_seed": 1840,
+  "metadata_filename": "scene_metadata_new.json",
+  "camera_count": 10,
+  "if_flipping_enhencement": true,
+  "data_source": "scannetpp",
+  "if_MCA": true,
+  "direction_name": ["north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest"],
+  "direction_name_2": ["front", "right", "back", "left"],
+  "direction_map": {
+      "north": "front",
+      "east": "right",
+      "south": "back",
+      "west": "left"
+    },
+  "obj_area_map": {
+      "sofa": ["sofa lounge area"],
+      "bed": ["sleeping area"],
+      "wall art": ["art dispaly area"],
+      "sink": ["sink area", "hand washing area"],
+      "book stack": ["book area"]
+    },
+  "unwanted_cats": ["floor", "wall", "ceiling", "skirtingboard support", "exterior", "space", "object", "sill", "structure", "remove", "REMOVE", "reflection", "partition", "decoration", "equipment", "material"],
+  "room_type": ["kitchen", "bedroom", "bathroom", "dining-room", "living-room"],
+  "obj_cat_with_orientation": {
+    "oven": "+X",
+    "window": "+Y",
+    "mirror": "+X",
+    "toilet": "+X",
+    "wall art": "+X",
+    "sofa": "+X",
+    "chair": "+X",
+    "sink": "+X",
+    "tap": "+X",
+    "monitor": "+X",
+    "tv": "-X"},
+  "MIN_AREA_THRESHOLD": 20000,
+  "MIN_SIDE_THRESHOLD": 100,
+  "common_num_threshold": 7,
+  "qa_templates_path": "./qa_templates.json",
+  "qa_dependency_tree_path": "./qa_dependency_tree.json",
+  "multilevel_qa_mode": "atomic",
+  "qa_types_per_camera_pair": 2
+}
