@@ -1,0 +1,192 @@
+import json
+import re
+import os
+from pathlib import Path
+from typing import List, Dict, Any, Union, Iterable
+
+# ==================== 🛠️ 路径配置区域 ====================
+ORIGINAL_DATA_PATH = "D:/Data/infinigen_20251031/QA_jsons_ScannetppIphone_MultilevelCategories_20260124_sampled_MCA_Multistage/ScannetppIphone_MultilevelCategories_20260124_sampled_MCA_Multistage_stage2_rel.json"  # 你的原始多轮 QA 数据路径 (.json)
+COT_DATA_PATH = "./output/ScannetppIphone_MultilevelCategories_20260124_sampled_MCA_Multistage_stage2_gemini-3-flash-preview_CoT_Cleaned_rel_ratio_1.00_no_system.json"  # 你的 CoT 生成结果文件路径 (.json 或 .jsonl)
+OUTPUT_MERGED_PATH = "./output/cot_with_original_aligned.json"  # 融合对齐后的输出路径 (.json)
+
+
+# =========================================================
+# JSON / JSONL 统一读取工具
+# =========================================================
+
+def load_data(file_path: Union[str, Path]) -> List[Dict]:
+    path = Path(file_path)
+    if not path.exists():
+        raise FileNotFoundError(f"未找到文件: {path}")
+
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            if isinstance(data, list):
+                return data
+            return [data]
+    except json.JSONDecodeError:
+        data = []
+        with open(path, 'r', encoding='utf-8') as f:
+            for line_num, line in enumerate(f, 1):
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    data.append(json.loads(line))
+                except json.JSONDecodeError as e:
+                    raise ValueError(f"解析 {path} 第 {line_num} 行时失败: {e}")
+        return data
+
+
+# =========================================================
+# 🧼 文本清洗与特征提取函数 (核心修正)
+# =========================================================
+
+def clean_question_text(text: str) -> str:
+    """
+    不管是在原始数据还是 CoT 数据里，都彻底剥离以下干扰：
+    1. 开头的 <image> 标记
+    2. 开头形如 "Question 6(Level 3:xxx):" 或 "Question 1(Level 1:xxx):" 的前缀
+    3. 末尾提示词模板 "Output your step-by-step thinking process..."
+    """
+    text = text.strip()
+
+    # 1. 剥离 <image> 标记
+    text = re.sub(r"^(<image>)+", "", text).strip()
+
+    # 2. 剥离 "Question X (Level Y: Z):" 前缀
+    # 兼容各种变体，例如 Question 6(Level 3:Attribute(Appr.)_Counting): 或 Question 1:
+    text = re.sub(r"^Question\s*\d+\s*\(.*?\):\s*", "", text, flags=re.IGNORECASE).strip()
+
+    # 3. 剥离末尾的 CoT 指示模板
+    template_pattern = r"\s*Output\s+your\s+step-by-step\s+thinking\s+process\s+in\s+<think>.*$"
+    text = re.sub(template_pattern, "", text, flags=re.IGNORECASE | re.DOTALL).strip()
+
+    return text
+
+
+def normalize_text(text: str) -> str:
+    """
+    文本归一化：转小写、去除一切标点符号、合并连续空格。
+    这能解决换行符 \n、空格、中英文标点等导致的“明明内容一样却匹配不上”的问题。
+    """
+    text = text.lower()
+    text = re.sub(r"[^a-zA-Z0-9\u4e00-\u9fa5\s]", " ", text)  # 仅保留字母、数字、中文和空格
+    return "".join(text.split())  # 连空格都压缩掉，只比对字符内容
+
+
+# =========================================================
+# 🚀 核心数据精确对齐
+# =========================================================
+
+def merge_datasets():
+    print("⏳ 正在载入数据集...")
+    orig_data = load_data(ORIGINAL_DATA_PATH)
+    cot_data = load_data(COT_DATA_PATH)
+    print(f"✅ 载入完成：原始数据 {len(orig_data)} 条，CoT 数据 {len(cot_data)} 条。")
+
+    # 1. 对原始数据建立极其精确的文本映射表
+    orig_registry = {}
+
+    for idx, orig_item in enumerate(orig_data):
+        scene_name = orig_item.get("scene_name", "")
+
+        # 获取原始数据的最后一个 User 提问（也就是真正的最终多轮问题）
+        messages = orig_item.get("messages", [])
+        user_messages = [m for m in messages if m["role"] == "user"]
+        if not user_messages:
+            continue
+
+        raw_last_question = user_messages[-1]["content"]
+
+        # 提取并归一化核心问题文本
+        cleaned_orig_q = clean_question_text(raw_last_question)
+        norm_orig_q = normalize_text(cleaned_orig_q)
+
+        # 复合 Key：场景名 + 归一化后的核心问题文本
+        # 由于同一场景下核心问题的文本和选项必然不同，这可以实现 100% 精确的唯一性定位
+        key = f"{scene_name}_{norm_orig_q}"
+        # print(key)
+        orig_registry[key] = orig_item
+
+    print(f"🔑 原始数据高精度文本索引构建完成，共载入 {len(orig_registry)} 条唯一键值对。")
+
+    # 2. 遍历 CoT 数据进行 1:1 精确配对
+    merged_dataset = []
+    matched_count = 0
+    unmatched_count = 0
+
+    print("\n🔄 开始严格文本哈希对齐与字段融合...")
+    for cot_item in cot_data:
+        scene_name = cot_item.get("scene_name", "")
+
+        # 获取 CoT 第一条消息的 User 问题
+        cot_messages = cot_item.get("messages", [])
+        if not cot_messages:
+            continue
+
+        raw_cot_q = cot_messages[0]["content"]
+        cleaned_cot_q = clean_question_text(raw_cot_q)
+        norm_cot_q = normalize_text(cleaned_cot_q)
+
+        # 生成对应的 Lookup Key
+        lookup_key = f"{scene_name}_{norm_cot_q}"
+
+        # 💡 强匹配逻辑：只允许精准的核心文本对齐
+        if lookup_key in orig_registry:
+            matched_orig = orig_registry[lookup_key]
+            matched_count += 1
+
+            # 深度拷贝，避免引用污染
+            merged_item = dict(cot_item)
+
+            # 提取原始数据中的中间多轮 QA
+            orig_msgs = matched_orig.get("messages", [])
+            intermediate_qa = []
+
+            # 遍历多轮对话（直到倒数第二轮，排除掉最后的主问题）
+            # 例如：有 6 轮问答（12 条 message），则前 10 条（5轮）是中间事实。最后一条 Q-A 是主问题。
+            # 🟢 修正：去掉 "- 2"，让循环完整遍历到最后一轮 Q-A
+            for i in range(0, len(orig_msgs), 2):
+                q = orig_msgs[i]["content"]
+                a = orig_msgs[i + 1]["content"]
+                intermediate_qa.append({
+                    "question": q,
+                    "answer": a
+                })
+
+            # 合并相关字段
+            merged_item["original_intermediate_qa"] = intermediate_qa
+            # 这里的 original_ground_truth_answer 依然保留作为快速验证的 GT
+            raw_gt_answer = orig_msgs[-1]["content"]
+            # 剥离开头的 "Answer X:" 或 "Answer X: " 前缀（不区分大小写）
+            clean_gt_answer = re.sub(r"^Answer\s*\d+:\s*", "", raw_gt_answer, flags=re.IGNORECASE).strip()
+            merged_item["original_ground_truth_answer"] = clean_gt_answer
+            merged_item["matched_original_scene_name"] = matched_orig.get("scene_name")
+            merged_item["matched_original_category"] = matched_orig.get("category")
+
+            merged_dataset.append(merged_item)
+        else:
+            unmatched_count += 1
+            # 未配对成功的数据，原样保留，并将关联字段设为 None
+            # merged_item = dict(cot_item)
+            # merged_item["original_intermediate_qa"] = []
+            # merged_item["original_ground_truth_answer"] = None
+            # merged_item["matched_original_scene_name"] = None
+            # merged_dataset.append(merged_item)
+
+    # 3. 写入新的结果文件
+    print("-" * 50)
+    print(f"🎯 对齐匹配结束！")
+    print(f"   - ✅ 成功精确匹配并合并: {matched_count} 条")
+    print(f"   - ❌ 匹配失败（无匹配项或格式异常）: {unmatched_count} 条")
+
+    with open(OUTPUT_MERGED_PATH, 'w', encoding='utf-8') as f:
+        json.dump(merged_dataset, f, indent=4, ensure_ascii=False)
+
+    print(f"💾 数据已成功保存至: {OUTPUT_MERGED_PATH}\n")
+
+
+if __name__ == "__main__":
+    merge_datasets()
