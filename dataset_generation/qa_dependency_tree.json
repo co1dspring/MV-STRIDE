@@ -1,0 +1,70 @@
+{
+  "Positional Relationship(Cam.-Obj.)": {
+    "level2": ["Cam_trans_forward", "Cam_trans_right", "Cam_rot_yaw"],
+    "level1": ["Cam_obj_yaw", "2D_location_perception_object"]
+  },
+  "Positional Relationship(Cam.-Reg.)": {
+    "level2": [],
+    "level1": []
+  },
+  "Attribute(Appr.)_Counting": {
+    "level2": ["Object_correspondence"],
+    "level1": ["2D_location_perception_category"]
+  },
+  "Attribute(Appr.)_Orientation": {
+    "level2": ["Cam_rot_yaw", "Object_correspondence"],
+    "level1": ["Cam_obj_yaw", "2D_location_perception_object"]
+  },
+  "Attribute(Meas.)": {
+    "level2": ["Object_correspondence"],
+    "level1": ["Measurement_comparison", "Depth_perception", "2D_location_perception_object"]
+  },
+  "Motion(Cam.)_Translation": {
+    "level2": ["Cam_trans_forward", "Cam_trans_right", "Cam_rot_yaw", "Cam_rot_pitch", "Object_correspondence"],
+    "level1": ["Cam_obj_yaw", "Cam_space_pitch", "2D_location_perception_object"]
+  },
+  "Motion(Cam.)_Rotation": {
+    "level2": ["Cam_trans_forward", "Cam_trans_right", "Cam_rot_yaw", "Cam_rot_pitch", "Object_correspondence"],
+    "level1": ["Cam_obj_yaw", "Cam_space_pitch", "2D_location_perception_object"]
+  },
+  "Positional Relationship(Cam.-Cam.)_Translation": {
+    "level2": ["Cam_trans_forward", "Cam_trans_right", "Cam_rot_yaw", "Cam_rot_pitch", "Object_correspondence"],
+    "level1": ["Cam_obj_yaw", "Cam_space_pitch", "2D_location_perception_object"]
+  },
+  "Positional Relationship(Cam.-Cam.)_Rotation": {
+    "level2": ["Cam_trans_forward", "Cam_trans_right", "Cam_rot_yaw", "Cam_rot_pitch", "Object_correspondence"],
+    "level1": ["Cam_obj_yaw", "Cam_space_pitch", "2D_location_perception_object"]
+  },
+  "Positional Relationship(Obj.-Obj.)": {
+    "level2": ["Cam_trans_forward", "Cam_trans_right", "Cam_rot_yaw", "Object_correspondence"],
+    "level1": ["Cam_obj_yaw", "2D_location_perception_object"]
+  },
+  "Positional Relationship(Obj.-Obj.)_Obj_in_options": {
+    "level2": ["Cam_trans_forward", "Cam_trans_right", "Cam_rot_yaw", "Object_correspondence"],
+    "level1": ["3D_location_cam_obj", "Cam_obj_yaw", "2D_location_perception_object"]
+  },
+  "Positional Relationship(Obj.-Obj.)_Orientation": {
+    "level2": ["Cam_trans_forward", "Cam_trans_right", "Cam_rot_yaw"],
+    "level1": ["3D_location_cam_obj", "Cam_obj_yaw", "2D_location_perception_object"]
+  },
+  "Positional Relationship(Obj.-Reg.)": {
+    "level2": ["Cam_trans_forward", "Cam_trans_right", "Cam_rot_yaw"],
+    "level1": ["Cam_obj_yaw", "2D_location_perception_object"]
+  },
+  "MSR_Cam": {
+    "level2": [],
+    "level1": []
+  },
+  "MSR_Cam_Obj": {
+    "level2": [],
+    "level1": []
+  },
+  "MSR_Counting": {
+    "level2": [],
+    "level1": []
+  },
+  "MSR_Obj_Obj": {
+    "level2": [],
+    "level1": []
+  }
+}

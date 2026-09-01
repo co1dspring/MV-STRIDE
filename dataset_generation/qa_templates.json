@@ -1,0 +1,286 @@
+{
+  "Positional Relationship(Cam.-Obj.)": [
+    "When you took the $REF_WORD$ photo, where was the {obj_des} in the $TAR_WORD$ photo in relation to you?",
+    "Assuming I am taking the $REF_WORD$ picture, in which direction relative to me is the {obj_des} of the $TAR_WORD$ picture likely located?",
+    "When you were taking the $REF_WORD$ photo, where was the {obj_des} in the $TAR_WORD$ photo in relation to you?",
+    "When I took the $REF_WORD$ photo, where was the {obj_des} in the $TAR_WORD$ photo in relation to me?",
+    "When you took the photo in Figure $REF_NUM$, where was the {obj_des} in Figure $TAR_NUM$ located relative to you?",
+    "When you took the photo in image $REF_NUM$, where was the {obj_des} in image $TAR_NUM$ located relative to you?",
+    "When you took photo $REF_NUM$, where was the {obj_des} in photo $TAR_NUM$ in relation to you?",
+    "The pictures are taken continuously from a first-person perspective, with two pictures overlapping at the frame. At the moment of the $REF_WORD$ picture, in which direction is the {obj_des} in the $TAR_WORD$ picture relative to you?",
+    "These two photos were taken by you in succession. When you took the $REF_WORD$ photo, in which direction is the {obj_des} in the $TAR_WORD$ photo relative to you?"
+  ],
+  "Positional Relationship(Cam.-Reg.)": [
+    "The pictures are taken continuously from a first-person perspective. At the moment of the $REF_NUM$ picture, in which direction is the {obj_des} relative to you?",
+    "I am taking photos with a camera. When I take the $REF_NUM$ photo, where is the {obj_des} relative to my position?",
+    "Imagine that you took these two photos in a row in the room. When you took the $REF_NUM$ photo, where was the {obj_des} relative to you?",
+    "Here are two pictures I took inside the room. When I took the $REF_NUM$ picture, where was the {obj_des} in relation to my position?",
+    "I took these two photos consecutively in the room. When I was taking the $REF_NUM$ photo, where was the {obj_des} relative to me?",
+    "I am taking photos inside the room. When I am taking the $REF_NUM$ photo, in which direction is the {obj_des} relative to me?",
+    "The images are taken continuously from a first-person perspective. At the moment of the $REF_NUM$ image, in which direction is the {obj_des} relative to you?",
+    "When you took the $REF_NUM$ photo, in which direction was the {obj_des} relative to you?",
+    "In the images taken continuously from a first-person perspective, at the moment of the $REF_NUM$ image, in which direction is the {obj_des} relative to you?",
+    "When you were taking the photo in Image $REF_NUM$, in which direction was the {obj_des} relative to you?"
+  ],
+  "Attribute(Appr.)_Counting": [
+    "How many {cat} are in these images?",
+    "How many different {cat} appear in total in these two images?",
+    "How many {cat} are there in total shown in these two pictures?",
+    "From these two photos, how many different {cat} can you see?",
+    "How many different {cat} are captured in total in these two pictures?",
+    "How many different {cat} are shown in total in these two pictures?"
+  ],
+  "Attribute(Appr.)_Orientation": [
+    "Figure 1 shows the {main_direction} side of the {ref_obj_des}. Which side of the {ref_obj_cat} is shown in Figure 2?",
+    "Figure 1 shows the {main_direction} side of the {ref_obj_des}. Which side of the {ref_obj_cat} does Figure 2 show?",
+    "In Figure 1, the {main_direction} side of the {ref_obj_des} can be seen. Which side of the {ref_obj_cat} can be seen Figure 2?",
+    "Assuming that Figure 1 was taken from the {main_direction} side of the {ref_obj_des}, from which side was Figure 2 taken?",
+    "Assuming I took photo 1 from the {main_direction} side of the {ref_obj_des}, from which direction did I take photo 2?",
+    "Assuming that Figure 1 shows the {main_direction} side of the {ref_obj_des}, then which side of the {ref_obj_cat} is most likely shown in Figure 2?",
+    "If the part captured in Figure 1 is the {main_direction} side of the {ref_obj_des}, then which side of the {ref_obj_cat} is shown in Figure 2?"
+  ],
+  "Attribute(Meas.)": {
+    "POSITION_IN_HEIGHT": {
+      "greater": [
+        "Which is higher, the {obj1_des} in Figure 1 or the {obj2_des} in Figure 2?",
+        "Is the top of {obj1_des} in Figure 1 higher, or is the top of the {obj2_des} in Figure 2 higher?",
+        "Between the {obj1_des} in picture 1 and the {obj2_des} in picture 2, which is higher?"
+      ],
+      "smaller": [
+        "Which is lower, the {obj1_des} in Figure 1 or the {obj2_des} in Figure 2?",
+        "Is the top of {obj1_des} in Figure 1 lower, or is the top of the {obj2_des} in Figure 2 lower?",
+        "Between the {obj1_des} in picture 1 and the {obj2_des} in picture 2, which is lower?"
+      ]
+    },
+    "LENGTH": {
+      "length": {
+        "greater": [
+          "Which object has the greater horizontal major dimension (Length): the {obj1_des} in Figure 1 or the {obj2_des} in Figure 2?",
+          "Which is longer, the {obj1_des} in Figure 1 or the {obj2_des} in Figure 2?",
+          "Which is greater, the {obj1_des} in Figure 1 or the {obj2_des} in Figure 2?"
+        ],
+        "smaller": [
+          "Which object has the smaller horizontal major dimension (Length): the {obj1_des} in Figure 1 or the {obj2_des} in Figure 2?",
+          "Which is shorter in length, the {obj1_des} in Figure 1 or the {obj2_des} in Figure 2?",
+          "Which is smaller, the {obj1_des} in Figure 1 or the {obj2_des} in Figure 2?"
+        ]
+      },
+      "width": {
+        "greater": [
+          "Which is wider, the {obj1_des} in Figure 1 or the {obj2_des} in Figure 2?",
+          "Comparing {obj1_des} Figure 1 and {obj2_des} in Figure 2, which one is wider?",
+          "The two photos show the same scene. Comparing {obj1_des} in Photo 1 with {obj2_des} in Photo 2, which one is wider?"
+        ],
+        "smaller": [
+          "Which is narrower in width, the {obj1_des} in Figure 1 or the {obj2_des} in Figure 2?",
+          "Comparing {obj1_des} Figure 1 and {obj2_des} in Figure 2, which one is narrower in width?",
+          "The two photos show the same scene. Comparing {obj1_des} in Photo 1 with {obj2_des} in Photo 2, which one is narrower in width?"
+        ]
+      }
+    },
+    "HEIGHT": {
+      "greater": [
+        "Comparing the {obj1_des} in Figure 1 and the {obj2_des} in Figure 2, which one is taller?",
+        "Which is taller, the {obj1_des} in Figure 1 or the {obj2_des} in Figure 2?",
+        "Which has a greater height, the {obj1_des} in Figure 1 or the {obj2_des} in Figure 2?"
+      ],
+      "smaller": [
+        "Comparing the {obj1_des} in Figure 1 and the {obj2_des} in Figure 2, which one is shorter in height?",
+        "Which is shorter in height, the {obj1_des} in Figure 1 or the {obj2_des} in Figure 2?",
+        "Which has a smaller height, the {obj1_des} in Figure 1 or the {obj2_des} in Figure 2?"
+      ]
+    }
+  },
+  "Motion(Cam.)_Translation": [
+    "The images are taken continuously from a first-person perspective. In which direction are you moving?",
+    "First-person continuous shooting, in which direction is the camera moving?",
+    "Continuous first-person shooting, in which direction are you moving?",
+    "The image is a continuous first-person perspective shot. In which direction are you moving?",
+    "Continuous shooting from a first-person perspective, with the direction the camera is facing as the front, in which direction is the camera moving?",
+    "I went from taking the first picture to taking the second picture, how did I most likely move?"
+  ],
+  "Motion(Cam.)_Rotation": [
+    "The images are taken continuously from a first-person perspective. In which direction is the camera rotating?",
+    "The images are taken in a continuous first-person perspective. In which direction is the camera rotating?",
+    "The images are taken continuously from a first-person perspective. In which direction is your viewpoint rotating?",
+    "First-person continuous shooting, in which direction is the camera rotating?",
+    "The images are taken continuously from a first-person perspective. In which direction is your viewpoint rotating (in terms of the up/down and left/right components)",
+    "Continuous shooting from a first-person perspective, in which direction are you rotating?",
+    "In a continuous first-person perspective shot, in which direction is the camera rotating?",
+    "From Figure 1 to Figure 2, in which direction does the camera mainly rotate?"
+  ],
+  "Positional Relationship(Cam.-Cam.)_Translation": {
+    "MODE_1": [
+      "The camera coordinate system is defined as $DIR_COOR$, and is a right-handed system. From the perspective of the camera coordinate system, how is the viewpoint of the $TAR_WORD$ image obtained by moving the viewpoint of the $REF_WORD$ image?",
+      "The camera coordinate system is defined as $DIR_COOR$, and is a right-handed system. How is the viewpoint in the $TAR_WORD$ image obtained from the viewpoint in the $REF_WORD$ image by moving in its corresponding camera coordinate system?"
+    ],
+    "MODE_2": [
+      "Assuming I am taking the $REF_WORD$ photo, where is the camera positioned relative to me when taking the $TAR_WORD$ photo?",
+      "Taking the direction faced when the $REF_WORD$ photo was taken as the front, from which direction relative to the $REF_WORD$ photo's shooting position was the $TAR_WORD$ photo taken?",
+      "First-person continuous shooting, from which direction relative to the shooting position of the $REF_WORD$ photo was the $TAR_WORD$ photo taken? Use the direction faced when taking the $REF_WORD$ photo as the front.",
+      "Continuous shooting from a first-person perspective, with the direction of the $REF_WORD$ photo as the front, what is the position of the $TAR_WORD$ photo relative to the $REF_WORD$ photo's shooting position?",
+      "When continuously filming from a first-person driving perspective, with the direction in Photo $REF_NUM$ as the front, from which direction relative to the position in Photo $REF_NUM$ is the position in Photo $TAR_NUM$ taken?",
+      "What is the position of the $TAR_WORD$ photo relative to the position where the $REF_WORD$ photo was taken?",
+      "What is the position of the $TAR_WORD$ photo relative to the position where the $REF_WORD$ photo was taken, using the direction faced when taking the $REF_WORD$ photo as the front?",
+      "Two consecutive first-person driving photos are taken, with the direction in Photo $REF_NUM$ considered as the front. From the perspective of Photo $REF_NUM$, where is the shooting position of Photo $TAR_NUM$ located?",
+      "Suppose I am taking the $REF_WORD$ photo, then where was the camera positioned relative to me when taking the $TAR_WORD$ photo?"
+    ]
+  },
+  "Positional Relationship(Cam.-Cam.)_Rotation": {
+    "MODE_1": [
+      "The camera coordinate system is defined as $DIR_COOR$, which is a right-handed system. How can the viewpoint in the $TAR_WORD$ image be obtained from the viewpoint in the $REF_WORD$ image in its corresponding camera coordinate system?",
+      "The camera coordinate system is defined as $DIR_COOR$, and is a right-handed system. How can the viewpoint in the $TAR_WORD$ image be obtained from the viewpoint in the $REF_WORD$ image in its corresponding camera coordinate system?",
+      "The camera coordinate system is defined as $DIR_COOR$, and is a right-handed system. How can the viewpoint of the $TAR_WORD$ image be obtained from the viewpoint of the $REF_WORD$ image in its corresponding camera coordinate system?"
+    ],
+    "MODE_2": [
+      "How can the perspective of the $REF_WORD$ image be changed to obtain the perspective of the $TAR_WORD$ image?"
+    ]
+  },
+  "Positional Relationship(Obj.-Obj.)": [
+    "The {obj1_des} is to the {main_direction} side of the {obj0_des}. In which direction is the {obj2_des} from the {obj0_des}?",
+    "The {obj1_des} is on the {main_direction} side of the {obj0_des}. In which direction is the {obj2_des} relative to the {obj0_des}?",
+    "In which direction is the {obj2_des} relative to the {obj0_des} (given that the {obj1_des} is to the {main_direction} of the {obj0_des})?",
+    "In which direction from the {obj0_des} is the {obj2_des} (the {obj1_des} is to the {main_direction} of the {obj0_des}, two photos were taken consecutively with overlap between them)?",
+    "In what direction is the {obj2_des} relative to the {obj0_des} (knowing that the {obj1_des} is in the {main_direction} of the {obj0_des}, and these two pictures overlap)?",
+    "From which direction does the {obj2_des} relative to the {obj0_des} (given that the {obj1_des} is on the {main_direction} of the {obj0_des})?",
+    "What is the direction of the {obj2_des} relative to the {obj0_des} (given that in two consecutively taken frames, the {obj1_des} is to the {main_direction} of the {obj0_des}, and the two images overlap)?",
+    "In which direction is the {obj2_des} relative to the {obj0_des} (given that the {obj1_des} is to the {main_direction} of the {obj0_des})?"
+  ],
+  "Positional Relationship(Obj.-Obj.)_Obj_in_options": [
+    "If the direction in which {ref_obj_B_des} is from the {ref_obj_A_des} is considered the {main_direction}, what object is directly to the {query_direction} of the {ref_obj_A_des}?",
+    "Relative to the {ref_obj_A_des}, if the {ref_obj_B_des} is in the {main_direction}, what object is found in the {query_direction} of the {ref_obj_A_des}?",
+    "Based on the objects visible in the picture, what object is to the {query_direction} of the {ref_obj_A_des} (with the direction in which {ref_obj_B_des} is to the {ref_obj_A_des} being {main_direction})?"
+  ],
+  "Positional Relationship(Obj.-Obj.)_Orientation": {
+    "premise": {
+      "chair": [
+        "When you are sitting on the {obj_des} facing {orientation_des}",
+        "If the direction faced by a person sitting on the {obj_des} is considered the {orientation_des}"
+      ],
+      "sofa": [
+        "A person is sitting on a {obj_des} facing {orientation_des}"
+      ],
+      "tv": [
+        "When a person sits in front of the {obj_des} and faces {orientation_des}",
+        "When a person is watching {obj_des} facing the {orientation_des}"
+      ],
+      "window": [
+        "If the direction one faces when looking out of the {obj_des} is considered the {orientation_des}",
+        "Taking the outward direction of the {obj_des} as the {orientation_des}"
+      ],
+      "toilet": [
+        "If the direction a person faces when using the {obj_des} is considered the {orientation_des}"
+      ],
+      "others": [
+        "Taking the orientation of the {obj_des} as the {orientation_des}",
+        "The {obj_des} is facing {orientation_des}"
+      ]
+    },
+    "question": [
+        "what is the position of the {obj_tar_des} relative to the {obj_ref_des}?",
+        "in which direction is the {obj_tar_des} relative to the {obj_ref_des}?",
+        "where is the {obj_tar_des} located in relation to the {obj_ref_des}?"
+      ]
+  },
+  "Positional Relationship(Obj.-Reg.)": {
+    "area": [
+      "Assuming the direction of the {obj1_des} relative to the {obj0_des} is {main_direction}, in which direction is the {obj2_des} located from the {obj0_des}?",
+      "Assuming the {obj1_des} is {main_direction} relative to the {obj0_des}, in which direction on the {obj0_des} is the {obj2_des}?"
+    ],
+    "room": [
+      "The {obj1_des} is on the {main_direction} side of the {obj0_des}. Where is the {obj2_des} located in the {obj0_des}?"
+    ]
+  },
+  "Positional Relationship(Obj.-Reg.)_Obj_orientation": {
+    "area": [
+      "Taking the direction the chair is facing in the second image as the front of the chair, in which direction is the balcony relative to the chair in the second image?",
+      "Taking the direction the chair is facing in the second image as the front of the chair, what is the scene to the right of the chair in the second image?",
+      "If the orientation of the drawing is north, in which direction is the kitchen in the drawing?"
+    ],
+    "room": [
+      "In the living room, the main door faces north; in which direction is the coffee table located in the dining room?"
+    ]
+  },
+  "MSR_Cam": [
+    "Assuming that the camera in Photo {cam_anchor_idx} is facing {anchor_dir}, if I am currently taking Photo {cam_current_idx}, then what is the direction of the camera relative to me when taking Photo {cam_target_idx}?"
+  ],
+  "MSR_Cam_Obj": [
+    "At the moment of the {ref_cam_num} picture, where is the {obj_des} relative to you?",
+    "When you take photos in the room, where is the {obj_des} located relative to you when you take the {ref_cam_num} picture?",
+    "When I took the {ref_cam_num} photo, in which direction was the {obj_des} relative to me?",
+    "When you were taking photo {ref_cam_num}, where was the {obj_des} in relation to you?"
+  ],
+  "MSR_Counting": [
+    "How many {cat} are in these images?",
+    "How many {cat} are there in total?",
+    "How many different {cat} appear in total in these images?",
+    "How many {cat} are there in total shown in these pictures?",
+    "From these photos, how many different {cat} can you see?",
+    "How many different {cat} are captured in total in these pictures?",
+    "How many different {cat} are shown in total in these pictures?"
+  ],
+  "MSR_Obj_Obj": [
+    "The images are taken continuously from a first-person perspective, with the {obj1_des} on the {main_direction} side of the {obj0_des}. In which direction is the {obj2_des} located relative to the {obj0_des}?"
+  ],
+  "2D_location_perception_category": {
+    "question": "Please identify all instances of {cat} in Figure{fig_num} and provide their bounding box coordinates.",
+    "answer_exist": "I found {count} {cat}(s) in Figure{fig_num}. The coordinates are: {bbox_list}.",
+    "answer_not_exist": "There are no {cat} instances visible in Figure{fig_num}."
+  },
+  "2D_location_perception_object": {
+    "question": "In Figure{fig_num}, please locate the {obj_des} and provide its bounding box coordinates.",
+    "answer_exist": "The {obj_des} in Figure{fig_num} is located at {bbox}.",
+    "answer_not_exist": "The {obj_des} described cannot be found in Figure{fig_num}."
+  },
+  "Cam_obj_yaw": {
+    "question": "In Figure{fig_num}, relative to the direction the camera is facing, what is the horizontal angular offset (yaw) of the {obj_des}? Is it to the left or right of the camera's center line?",
+    "answer": "In Figure{fig_num}, the {obj_des} is positioned at a horizontal angle of {angle} degrees to the {side} of the camera's central line of sight."
+  },
+  "Cam_space_pitch": {
+    "question": "Considering the perspective and the layout of the scene in Figure{fig_num}, what is the vertical tilt (pitch) of the camera? Is it pointing upwards, downwards, or staying level?",
+    "answer": "Based on the visual evidence in Figure{fig_num}, the camera is tilted {angle} degrees {direction} relative to the horizontal plane."
+  },
+  "Depth_perception": {
+    "question": "In Figure{fig_num}, what is the straight-line distance from the camera to the 3D center of the {obj_des}, measured in meters?",
+    "answer": "In Figure{fig_num}, the {obj_des} is located at a depth of approximately {depth_val} meters from the camera."
+  },
+  "Measurement_comparison": {
+    "altitude": {
+      "question": "In Figure{fig_num}, what are the altitudes (vertical positions) of the {tar_obj} and the {ref_obj}, and how many times higher is the {tar_obj} compared to the {ref_obj}?",
+      "answer": "The altitude of the {tar_obj} is approximately {tar_val} meters, while the {ref_obj} is at {ref_val} meters. Therefore, the {tar_obj} is {ratio} times as high as the {ref_obj} relative to the ground."
+    },
+    "height": {
+      "question": "In Figure{fig_num}, please estimate the physical heights of the {tar_obj} and the {ref_obj}. What is the ratio of the {tar_obj}'s height to the {ref_obj}'s?",
+      "answer": "The {tar_obj} has an estimated height of {tar_val} meters, and the {ref_obj} stands {ref_val} meters tall. Thus, the {tar_obj} is {ratio} times the height of the {ref_obj}."
+    },
+    "length": {
+      "question": "In Figure{fig_num}, what are the maximum horizontal lengths of the {tar_obj} and the {ref_obj}? How many times the length of the {ref_obj} is the {tar_obj}?",
+      "answer": "The maximum horizontal length of the {tar_obj} is approximately {tar_val} meters, compared to {ref_val} meters for the {ref_obj}. The {tar_obj} is approximately {ratio} times as long as the {ref_obj}."
+    }
+  },
+  "3D_location_cam_obj": {
+    "question": "Considering the camera's viewpoint in Figure{fig_num}, what are the 3D coordinates of the {obj_des} center within the camera's own local coordinate system (where the camera is at [0, 0, 0])?",
+    "answer": "In the local coordinate system of the camera of Figure{fig_num}, the {obj_des} is positioned at approximately x={x_c}, y={y_c}, and z={z_c} (measured in meters), where z represents the relative depth."
+  },
+  "Cam_trans_forward": {
+    "question": "Relative to the local coordinate system of the camera in Figure {fig_num_1}, did the camera move forward or backward when transitioning to Figure {fig_num_2}, and what is the distance?",
+    "answer": "The camera moved {side} by approximately {distance} meters."
+  },
+  "Cam_trans_right": {
+    "question": "In the local coordinate system of Figure {fig_num_1}, in which horizontal direction (left or right) did the camera shift to Figure {fig_num_2}, and what is the translation distance?",
+    "answer": "The camera shifted to the {side} by approximately {distance} meters."
+  },
+  "Cam_rot_yaw": {
+    "question": "From Figure {fig_num_1} to Figure {fig_num_2}, in which horizontal direction did the camera rotate, and what is the rotation angle?",
+    "answer": "The camera rotated {side} by approximately {angle} degrees."
+  },
+  "Cam_rot_pitch": {
+    "question": "From Figure {fig_num_1} to Figure {fig_num_2}, in which vertical direction did the camera rotate, and what is the rotation angle?",
+    "answer": "The camera tilted {side} by approximately {angle} degrees."
+  },
+  "Object_correspondence": {
+    "question": "In Figure {fig_num_1}, there is a {cat} located at {bbox1}. Can you find this same physical object in Figure {fig_num_2}? If so, what are its coordinates in Figure {fig_num_2}?",
+    "answer_exist": "Yes, the same {cat} is visible in Figure {fig_num_2}, and its coordinates are {bbox2}.",
+    "answer_not_exist": "No, the same {cat} cannot be found in Figure {fig_num_2}. It has either moved out of the field of view or is completely obstructed."
+  }
+}
