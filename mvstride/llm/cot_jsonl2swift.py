@@ -159,8 +159,16 @@ def process_and_filter_data(input_path, output_path, min_think_length=100):
 
 
 if __name__ == "__main__":
-    input_file = './output/ScannetppIphone_MultilevelCategories_20260124_sampled_MCA_Multistage_stage2_gemini-3-flash-preview_CoT.jsonl'
-    output_file = './output/ScannetppIphone_MultilevelCategories_20260124_sampled_MCA_Multistage_stage2_gemini-3-flash-preview_CoT_Cleaned.json'
+    import argparse
+
+    parser = argparse.ArgumentParser(description="修复 <think>/<answer> 标签、过滤过短 CoT 并输出清洗 JSON")
+    parser.add_argument("--input-file",
+                        default='./output/ScannetppIphone_MultilevelCategories_20260124_sampled_MCA_Multistage_stage2_gemini-3-flash-preview_CoT.jsonl',
+                        help="mvstride_cot_generation.py 的 CoT 输出")
+    parser.add_argument("--output-file",
+                        default='./output/ScannetppIphone_MultilevelCategories_20260124_sampled_MCA_Multistage_stage2_gemini-3-flash-preview_CoT_Cleaned.json',
+                        help="清洗后的输出文件")
+    args = parser.parse_args()
 
     # Configure the minimum acceptable thinking length (e.g. 100 chars).
-    process_and_filter_data(input_file, output_file, min_think_length=100)
+    process_and_filter_data(args.input_file, args.output_file, min_think_length=100)

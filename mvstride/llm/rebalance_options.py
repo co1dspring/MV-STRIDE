@@ -122,6 +122,14 @@ def rebalance_jsonl_to_json(input_file, output_file):
 
 
 if __name__ == "__main__":
-    input_path = "./output/SPAR_stage3_grpo_sampled_gemini-3-flash-preview_MCA.jsonl"
-    output_path = "./output/SPAR_stage3_grpo_sampled_gemini-3-flash-preview_MCA_balanced.json"
-    rebalance_jsonl_to_json(input_path, output_path)
+    import argparse
+
+    parser = argparse.ArgumentParser(description="重排 MCA 选项字母使 A/B/C/D 答案分布均衡")
+    parser.add_argument("--input-file",
+                        default="./output/SPAR_stage3_grpo_sampled_gemini-3-flash-preview_MCA.jsonl",
+                        help="choice_generation.py 的输出 jsonl")
+    parser.add_argument("--output-file",
+                        default="./output/SPAR_stage3_grpo_sampled_gemini-3-flash-preview_MCA_balanced.json",
+                        help="均衡化后的输出文件")
+    args = parser.parse_args()
+    rebalance_jsonl_to_json(args.input_file, args.output_file)

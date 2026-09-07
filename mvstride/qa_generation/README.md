@@ -1,28 +1,37 @@
 # qa_generation
 
-**核心数据构建模块**：从每场景的几何标注元数据，生成分层的多视角空间推理 QA 组。
+**Core data-construction module**: generates hierarchical multi-view spatial-reasoning QA groups from
+per-scene geometric annotation metadata.
 
-## 三个能力层级
+## The Three Capability Levels
 
-- **Level I — 单视角空间感知**：`2D_location_perception_category/_object`、`Cam_obj_yaw`、`Cam_space_pitch`、`Depth_perception`、`Measurement_comparison`、`3D_location_cam_obj`
-- **Level II — 跨视角场景理解**：`Object_correspondence`、`Cam_rot_yaw/_pitch`、`Cam_trans_forward/_right`
-- **Level III — 多视角上下文推理**：各种 `Positional Relationship`、`Motion(Cam.)_*`、`Attribute(Appr.)_*` 等 + 4 种 MSR 类型（`MSR_Cam`、`MSR_Cam_Obj`、`MSR_Counting`、`MSR_Obj_Obj`）
+- **Level I — single-view spatial perception**: `2D_location_perception_category/_object`, `Cam_obj_yaw`, `Cam_space_pitch`, `Depth_perception`, `Measurement_comparison`, `3D_location_cam_obj`
+- **Level II — cross-view scene understanding**: `Object_correspondence`, `Cam_rot_yaw/_pitch`, `Cam_trans_forward/_right`
+- **Level III — multi-view contextual reasoning**: various `Positional Relationship`, `Motion(Cam.)_*`, `Attribute(Appr.)_*`, etc. + 4 MSR types (`MSR_Cam`, `MSR_Cam_Obj`, `MSR_Counting`, `MSR_Obj_Obj`)
 
-## 设计原则
+## Design Principles
 
-1. **分层能力建模**：每条 Level III 问题与其前置的 Level I/II 子问题捆绑（见 `configs/qa/qa_dependency_tree.json`）。
-2. **多选答案（MCA）**：A/B/C/D 选项与可校验的几何真值（`if_MCA` 配置）。
-3. **跨视角依赖过滤**：相机配对使 Level III 的证据跨视角分布，减少单图捷径。
-4. 输出分为 `atomic/` 与 `conversation/` 两种模式，再按场景划分 stage1/2/3。
+1. **Hierarchical capability modeling**: each Level III question is bundled with its prerequisite
+   Level I/II sub-questions (see `configs/qa/qa_dependency_tree.json`).
+2. **Multiple-choice answers (MCA)**: A/B/C/D options with verifiable geometric ground truth
+   (`if_MCA` config).
+3. **Cross-view dependency filtering**: camera pairing spreads Level III evidence across views,
+   reducing single-image shortcuts.
+4. Two output modes: `atomic` (default; groups are flattened into single-turn QAs, stored per category
+   under `atomic/level_{1,2,3}/`) and `conversation` (the whole group as a multi-turn dialogue). All 6
+   configs shipped with the repo are `atomic`; the `conversation` branch and the scene-pool stage1/2/3
+   split live in `repartition_data_by_stage()` (`stage2` depends on conversation groups and is empty
+   under the current configs).
 
-## 目录内容
+## Contents
 
-| 逻辑 | 文件 |
+| Role | Files |
 |---|---|
-| 主生成器 | `generate_QAs_multilevel_multistage.py`（`*2.py` / `*3.py` 为不可运行的重构片段，已归档 `misc/legacy/`） |
-| Level I/II 生成器 | `multilevel_qa/`（`level1_qa.py`、`level2_qa.py`） |
-| 几何/QA 工具 | `util/`（`math_utils.py`、`qa_utils.py`、`filter_utils.py`、`common_utils.py`） |
-| 阶段采样 | `sample_stage2.py`、`sample_stage3.py` |
-| 通用 json 工具 | `merge_json.py`、`duplicate_json.py`（按类别切分的 `tools/split_json.py` 为参数化新版，旧硬编码版见 `misc/legacy/split_json.py`） |
+| Main generator | `generate_QAs_multilevel_multistage.py` (`*2.py` / `*3.py` are non-runnable refactor fragments, archived in `misc/legacy/`) |
+| Level I/II generators | `multilevel_qa/` (`level1_qa.py`, `level2_qa.py`) |
+| Geometry/QA utilities | `util/` (`math_utils.py`, `qa_utils.py`, `filter_utils.py`, `common_utils.py`) |
+| Stage sampling | `sample_stage2.py`, `sample_stage3.py` |
+| Generic json utilities | `merge_json.py`, `duplicate_json.py` (the per-category `tools/split_json.py` is the parameterized new version; the old hard-coded one is in `misc/legacy/split_json.py`) |
 
-配置位于 `configs/qa/`（相对路径以 `configs/qa/` 为基准解析，见 [`configs/qa/README.md`](../../configs/qa/README.md)）。
+Configs live in `configs/qa/` (relative paths inside configs resolve from the repo root; the entry
+point takes the config via `--config`; see [`configs/qa/README.md`](../../configs/qa/README.md)).

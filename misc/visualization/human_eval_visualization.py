@@ -34,25 +34,19 @@ st.markdown("""
 
 # 2. Image path conversion.
 def process_image_path(raw_path):
-    if 'Infinigen_MMSIBench_ver2' in raw_path:
-        prefix = "/path/to/data/Infinigen_MMSIBench_ver2"
-        if raw_path.startswith(prefix):
-            cleaned_path = raw_path[len(prefix):].lstrip("/")
-        else:
-            cleaned_path = raw_path.lstrip("/")
-
-        # Build the new path (Streamlit's working dir may differ; Path keeps it robust).
-        new_path = Path("../infinigen_metadata_ver2") / cleaned_path
-    else:
-        prefix = "/path/to/data"
-        if raw_path.startswith(prefix):
-            cleaned_path = raw_path[len(prefix):].lstrip("/")
-        else:
-            cleaned_path = raw_path.lstrip("/")
-
-        # Build the new path (Streamlit's working dir may differ; Path keeps it robust).
-        new_path = Path("/path/to/data/scannetpp") / cleaned_path
-    return new_path
+    """把 json 里的图像路径映射回本机真实文件：先按原样尝试，再按仓库 data/ 布局回退。"""
+    candidates = [Path(raw_path)]
+    for marker, local_root in (
+        ("saved_scenes", "data/infinigen/saved_scenes"),
+        ("scannetpp_sampled_modified", "data/scannetpp/scannetpp_sampled_modified"),
+    ):
+        if marker in raw_path:
+            tail = raw_path.split(marker, 1)[1].lstrip("/\\")
+            candidates.append(Path(local_root) / tail)
+    for cand in candidates:
+        if cand.exists():
+            return cand
+    return candidates[0]
 
 
 # 3. Initialize session state.

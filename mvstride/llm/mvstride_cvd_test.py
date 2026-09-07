@@ -594,6 +594,14 @@ class APIDataProcesser:
         return total_metrics
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="跨视角依赖测试集纯多选推理（evaluation 用）")
+    parser.add_argument("--input-file", default='/path/to/data/cross_view_dependency_sampled_singleview_1000.json',
+                        help="cross_view_dependency_test_sampling.py 的输出（默认占位符，需替换为本机实际文件）")
+    parser.add_argument("--output-dir", default='./output', help="输出目录")
+    args = parser.parse_args()
+
     # Credentials and proxy are read from the environment; do not hard-code secrets.
     username = os.environ.get("API_USERNAME")
     password = os.environ.get("API_PASSWORD")
@@ -603,8 +611,8 @@ if __name__ == "__main__":
         os.environ["https_proxy"] = f"http://{username}:{password}@{proxy_url}:8080"
 
     my_config = {
-        'input_file_path': '/path/to/data/cross_view_dependency_sampled_singleview_1000.json',
-        'output_file_dir': './output',
+        'input_file_path': args.input_file,
+        'output_file_dir': args.output_dir,
         'image_base_path': {'scannetpp': '/path/to/data/scannetpp_sampled_modified', 'infinigen': '/path/to/data/infinigen_metadata_ver2'},
         'model_name': 'gemini-3-flash-preview',
         'thread_num': 40,

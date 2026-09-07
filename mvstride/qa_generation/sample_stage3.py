@@ -127,8 +127,8 @@ if __name__ == "__main__":
 
     # you can run it twice manually, or put two paths here
     datasets = [
-        # '../api/output/Infinigen_MultilevelCategories_20260125_sampled_MCA_Multistage_stage3_gemini-3-flash-preview_MCA.json'
-        '../api/output/ScannetppIphone_MultilevelCategories_20260125_sampled_MCA_Multistage_stage3_gemini-3-flash-preview_MCA.json'
+        # './output/Infinigen_MultilevelCategories_20260125_sampled_MCA_Multistage_stage3_gemini-3-flash-preview_MCA.json'
+        './output/ScannetppIphone_MultilevelCategories_20260125_sampled_MCA_Multistage_stage3_gemini-3-flash-preview_MCA.json'
         # '../QA_jsons_Infinigen_MultilevelCategories_20260125_sampled_MCA_Multistage/Infinigen_MultilevelCategories_20260125_sampled_MCA_Multistage_stage3.json',
         # '../QA_jsons_ScannetppIphone_MultilevelCategories_20260125_sampled_MCA_Multistage/ScannetppIphone_MultilevelCategories_20260125_sampled_MCA_Multistage_stage3.json'
     ]

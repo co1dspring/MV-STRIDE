@@ -147,12 +147,12 @@ python mvstride/scene_processing/scannetpp/scannetpp2infinigen_new.py \
 ### 5) QA 生成（与 Infinigen 共用）
 
 ```bash
-# 从仓库根目录运行；把 mvstride/qa_generation/generate_QAs_multilevel_multistage.py 末尾的
-# CONFIG_PATH 设为 './configs/qa/qa_config_scannetpp.json' 后执行：
-python mvstride/qa_generation/generate_QAs_multilevel_multistage.py
+# 从仓库根目录运行；--config 指向 ScanNet++ 配置：
+python mvstride/qa_generation/generate_QAs_multilevel_multistage.py \
+  --config ./configs/qa/qa_config_scannetpp.json
 ```
 
-> 生成器以 `configs/qa/` 为基准解析其中的相对路径；`qa_config_scannetpp.json` 的 `source_data_dir` /
+> 生成器解析配置内的相对路径以**仓库根**为基准；`qa_config_scannetpp.json` 的 `source_data_dir` /
 > `training_environment_base_dir` 指向本流程第 4 步的输出目录（见 [`configs/qa/README.md`](../../configs/qa/README.md)）。
 
 ---
@@ -206,7 +206,7 @@ python mvstride/qa_generation/generate_QAs_multilevel_multistage.py
 3. 每隔 `sample_rate` 帧取一帧：`all_extrinsics[::sample_rate]`，脚本默认 `--sample-rate 5`。
 
 官方 iPhone 注册大约每 10 个视频帧注册一次，因此实际输出约为**每 50 个视频帧取 1 帧**，
-每场景约 **120–130 帧**（本仓库 138 场景采样数据即按此产出，`global_seed` 无关、可逐位复现）。
+每场景约 **120–130 帧**（本仓库 137 个场景的采样数据即按此产出，`global_seed` 无关、可逐位复现）。
 采样后的帧照常经过[第二节](#二代码归属官方-vs-自研)的可见性过滤，因此不是所有帧都会保留物体记录。
 
 ---
@@ -219,7 +219,7 @@ python mvstride/qa_generation/generate_QAs_multilevel_multistage.py
 |---|---|---|
 | `data/` | 官方下载的原始数据（每场景 `iphone/ + scans/ + dslr/`） | 下载器输出；`preprocess_iphone.py --data-root` 指向其父目录 |
 | `scannetpp_sampled/` | 历史抽帧树（`<scene>/iphone/frame_*.jpg`，曾带 `.jpg.jpg` 双后缀）+ 早期 `obj_annotation*.json` 变体 | 早期变体**非 QA 链路**；帧图树是 `scannetpp2infinigen_new.py --raw-root` 的默认值（双后缀兼容已内建：找不到时自动补 `.jpg`） |
-| `scannetpp_sampled_new/` | 每场景 `scene_metadata.json`（138 场景） | `preprocess_iphone.py` 输出；`--anno-root` 默认值 |
+| `scannetpp_sampled_new/` | 每场景 `scene_metadata.json`（137 个场景 + 1 个 `debug_viz/` 调试可视化目录，后者无标注、会被转换脚本跳过） | `preprocess_iphone.py` 输出；`--anno-root` 默认值 |
 | `scannetpp_sampled_modified/` | 每场景 `<scene>_iphone/{scene_metadata_new.json, images/}` | `scannetpp2infinigen_new.py` 输出；**QA 生成器的输入**（`qa_config_scannetpp.json` 的 `source_data_dir`） |
 
 > 从零复现时推荐：让 `preprocess_iphone.py` 直接把帧图拷进输出目录（默认行为），再令

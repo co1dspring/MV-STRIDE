@@ -71,10 +71,10 @@ def normalize_text(text: str) -> str:
 
 
 # Core precise data alignment.
-def merge_datasets():
+def merge_datasets(original_data_path=ORIGINAL_DATA_PATH, cot_data_path=COT_DATA_PATH, output_merged_path=OUTPUT_MERGED_PATH):
     print("Loading datasets...")
-    orig_data = load_data(ORIGINAL_DATA_PATH)
-    cot_data = load_data(COT_DATA_PATH)
+    orig_data = load_data(original_data_path)
+    cot_data = load_data(cot_data_path)
     print(f"Loaded: {len(orig_data)} original items, {len(cot_data)} CoT items.")
 
     # 1. Build a precise text-mapping index over the original data.
@@ -165,11 +165,19 @@ def merge_datasets():
     print(f"   - Exactly matched and merged: {matched_count} items")
     print(f"   - Failed to match: {unmatched_count} items")
 
-    with open(OUTPUT_MERGED_PATH, 'w', encoding='utf-8') as f:
+    with open(output_merged_path, 'w', encoding='utf-8') as f:
         json.dump(merged_dataset, f, indent=4, ensure_ascii=False)
 
-    print(f"Data saved to: {OUTPUT_MERGED_PATH}\n")
+    print(f"Data saved to: {output_merged_path}\n")
 
 
 if __name__ == "__main__":
-    merge_datasets()
+    import argparse
+
+    parser = argparse.ArgumentParser(description="把清洗后的 CoT 数据按 (scene_name, 归一化问题) 对齐回原始多轮 QA，并注入真值字段")
+    parser.add_argument("--original-data", default=ORIGINAL_DATA_PATH, help="原始 stage2 QA 文件")
+    parser.add_argument("--cot-data", default=COT_DATA_PATH, help="remove_system.py 的输出")
+    parser.add_argument("--output-merged", default=OUTPUT_MERGED_PATH, help="对齐合并后的输出文件")
+    args = parser.parse_args()
+
+    merge_datasets(args.original_data, args.cot_data, args.output_merged)

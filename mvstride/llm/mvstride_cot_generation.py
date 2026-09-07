@@ -311,11 +311,14 @@ class APIDataProcesser:
                 # Build the training-format output: keep the level-3 question and
                 # generated CoT answer as messages, store the raw input under another
                 # key, and retain the API call diagnostics.
+                main_q_content = item['messages'][-2]['content']
+                main_q_parts = main_q_content.split(':', 2)
+                main_q_body = main_q_parts[2].strip() if len(main_q_parts) > 2 else main_q_content.strip()
                 output_piece = {
                     'messages': [
                         {
                             "role": "user",
-                            "content": '<image><image>'+item['messages'][-2]['content'].split(':', 2)[2].strip(),
+                            "content": ("<image>" * len(item.get('images', []))) + main_q_body,
                         },
                         {
                             "role": "assistant",
@@ -648,6 +651,16 @@ class APIDataProcesser:
         return total_metrics
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Stage 2：把多轮 QA 组发给 LLM(vision)，生成 Level III 主问题的逐步 CoT")
+    parser.add_argument("--input-file", default='/path/to/data/QA_jsons_MultilevelCategories_sampled_MCA_Multistage_stage2.json',
+                        help="输入 stage2 QA json（默认占位符，需替换为本机实际文件）")
+    parser.add_argument("--output-dir", default='./output', help="输出目录")
+    parser.add_argument("--image-base-dir", default='/path/to/data/scannetpp_sampled_modified',
+                        help="图像基目录（json 内 images 取末三级路径拼接于其后）")
+    args = parser.parse_args()
+
     # Credentials and proxy are read from the environment; do not hard-code secrets.
     username = os.environ.get("API_USERNAME")
     password = os.environ.get("API_PASSWORD")
@@ -657,13 +670,13 @@ if __name__ == "__main__":
         os.environ["https_proxy"] = f"http://{username}:{password}@{proxy_url}:8080"
 
     my_config = {
-        'input_file_path': '/path/to/data/QA_jsons_MultilevelCategories_sampled_MCA_Multistage_stage2.json',
-        'output_file_dir': './output',
-        'image_base_path': '/path/to/data/scannetpp_sampled_modified',
+        'input_file_path': args.input_file,
+        'output_file_dir': args.output_dir,
+        'image_base_path': args.image_base_dir,
         'model_name': 'gemini-3-flash-preview',
         'thread_num': 5,
         'batch_size': 10
     }
 
     processer = APIDataProcesser(my_config)
-    processer.aggregate_all_stats()
+    processer.process_data()

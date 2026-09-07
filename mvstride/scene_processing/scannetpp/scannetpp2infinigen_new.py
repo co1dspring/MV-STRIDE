@@ -142,6 +142,15 @@ class ScanNetPPDataProcessor:
             W, H = size if size else (1920, 1080)
 
             camera_name = Path(img.get("image_path", "")).stem
+
+            # 防御：extrinsic 缺失或非方阵时求逆会抛异常，跳过该相机而不是让整个场景失败
+            extrinsic = img.get("extrinsic")
+            try:
+                c2w_colmap = np.linalg.inv(np.array(extrinsic, dtype=np.float64))
+            except Exception as e:
+                logger.warning(f"{scene_id}/{data_type} 相机 {camera_name} 缺少有效 extrinsic，跳过该相机: {e}")
+                continue
+
             new_image_path = f"{scene_id}_{data_type}/images/{Path(img.get('image_path', '')).name}"
             if dst_images_dir is not None and raw_img_path is not None:
                 dst_img = dst_images_dir / img_filename
@@ -149,7 +158,6 @@ class ScanNetPPDataProcessor:
                     dst_img.parent.mkdir(parents=True, exist_ok=True)
                     shutil.copy2(raw_img_path, dst_img)
 
-            c2w_colmap = np.linalg.inv(np.array(img.get("extrinsic", [])))
             R_conversion = np.array([[1, 0, 0], [0, -1, 0], [0, 0, -1]]) if data_type == "iphone" else np.array([[-1, 0, 0], [0, 1, 0], [0, 0, -1]])
 
             R_old = c2w_colmap[:3, :3]
@@ -174,28 +182,39 @@ class ScanNetPPDataProcessor:
             for obj in img.get("objects", []):
                 obj_category = obj.get("category", "unknown")
                 obj_3d_center = obj.get("3D_location", [])
+                bbox_2d = obj.get("2D_bbox") or []
+
+                # 防御：字段缺失/格式异常的脏标注直接跳过该物体，避免 KeyError / IndexError 中断整个场景
+                if len(bbox_2d) < 4:
+                    logger.warning(f"{scene_id}/{data_type} 物体缺少完整 2D_bbox，跳过: {obj_category}")
+                    continue
+                if len(obj_3d_center) != 3 or not obj.get("3D_size") or not obj.get("3D_rotation"):
+                    logger.warning(f"{scene_id}/{data_type} 物体缺少 3D_location/size/rotation，跳过: {obj_category}")
+                    continue
 
                 key = (obj_category, tuple(obj_3d_center))
                 if key in scene_objs_loc_list:
                     current_obj_id = scene_objs_loc_list[key]
                 else:
                     current_obj_id = scene_objs_id
-                    scene_objs_loc_list[key] = current_obj_id
                     res = self._convert_obb_to_aabb_format(obj_3d_center, obj['3D_size'], obj['3D_rotation'])
-                    if res:
-                        modified_data["objects"][str(current_obj_id)] = {
-                            "category": obj_category,
-                            "3d_center": obj_3d_center,
-                            "axis_directions": res["axis_directions"],
-                            "bbox_3d_aabb": res["bbox_3d_aabb"]
-                        }
-                        scene_objs_id += 1
+                    if not res:
+                        logger.warning(f"{scene_id}/{data_type} 物体 3D 几何转换失败，跳过: {obj_category}")
+                        continue
+                    scene_objs_loc_list[key] = current_obj_id
+                    modified_data["objects"][str(current_obj_id)] = {
+                        "category": obj_category,
+                        "3d_center": obj_3d_center,
+                        "axis_directions": res["axis_directions"],
+                        "bbox_3d_aabb": res["bbox_3d_aabb"]
+                    }
+                    scene_objs_id += 1
 
                 camera_objs[str(current_obj_id)] = {
                     "object_index": current_obj_id,
                     "bbox_2d": {
-                        "min_x": obj.get("2D_bbox", [])[1], "min_y": obj.get("2D_bbox", [])[0],
-                        "max_x": obj.get("2D_bbox", [])[3], "max_y": obj.get("2D_bbox", [])[2]
+                        "min_x": bbox_2d[1], "min_y": bbox_2d[0],
+                        "max_x": bbox_2d[3], "max_y": bbox_2d[2]
                     }
                 }
             modified_data["cameras"][camera_name]["objects"] = camera_objs

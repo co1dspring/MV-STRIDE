@@ -1,0 +1,15 @@
+# 核心运行依赖（QA 生成需 Python 3.9+：generate_QAs_multilevel_multistage.py 使用 dict | dict 合并运算符；
+# scene_processing 等其余环节 3.8+ 即可）
+# 场景标注提取（scene_processing）与 QA 生成（qa_generation）、评测（evaluation）、工具（tools）
+numpy
+scipy
+Pillow
+tqdm
+opencv-python
+icecream
+
+# ---- 以下为可选分层依赖（用到对应阶段时再安装）----
+# mvstride/llm（LLM CoT 生成/校验/MCA 等，OpenAI 兼容接口）：
+#   openai  jsonlines
+# 评测/可视化（misc/visualization 的 Streamlit/PyQt5 工具）：
+#   streamlit  pyqt5  datasets  pandas

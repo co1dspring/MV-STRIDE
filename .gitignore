@@ -12,6 +12,10 @@ claude_log.md
 # Qoder 本地会话配置
 .qoder/
 
+# 本地复现数据：QA 输入与输出（发布到 HuggingFace，不入 GitHub）
+data/*
+!data/README.md
+
 # ---------- 环境与凭据 ----------
 # 环境变量 / 密钥文件（防止误提交）
 .env

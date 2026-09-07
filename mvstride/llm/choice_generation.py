@@ -181,6 +181,9 @@ class APIDataProcesser:
                 # generated CoT answer as messages, store the raw input under another
                 # key, and retain the API call diagnostics.
                 output_piece = self._process_api_response(output, item)
+                if output_piece is None:
+                    # _process_api_response already logged the reason (parse failure).
+                    return False, ''
                 output_piece['response_lst'] = raw_response
                 if output == '':
                     return False, output_piece
@@ -553,6 +556,16 @@ class APIDataProcesser:
         return total_metrics
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="把开放问答 QA 转成 A/B/C/D 多选（MCA）")
+    parser.add_argument("--input-file", default='/path/to/data/SPAR_stage3_grpo_sampled.json',
+                        help="输入 QA json（默认占位符，需替换为本机实际文件）")
+    parser.add_argument("--output-dir", default='./output', help="输出目录")
+    parser.add_argument("--image-base-dir", default='/path/to/data/scannetpp_sampled_modified',
+                        help="图像基目录（json 内 images 相对它解析）")
+    args = parser.parse_args()
+
     # Credentials and proxy are read from the environment; do not hard-code secrets.
     username = os.environ.get("API_USERNAME")
     password = os.environ.get("API_PASSWORD")
@@ -562,9 +575,9 @@ if __name__ == "__main__":
         os.environ["https_proxy"] = f"http://{username}:{password}@{proxy_url}:8080"
 
     my_config = {
-        'input_file_path': '/path/to/data/SPAR_stage3_grpo_sampled.json',
-        'output_file_dir': './output',
-        'image_base_path': '/path/to/data/scannetpp_sampled_modified',
+        'input_file_path': args.input_file,
+        'output_file_dir': args.output_dir,
+        'image_base_path': args.image_base_dir,
         'model_name': 'gemini-3-flash-preview',
         'thread_num': 20,
         'batch_size': 20

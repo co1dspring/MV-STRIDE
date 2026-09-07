@@ -30,11 +30,20 @@ def clean_instruction_from_json(input_file, output_file):
     print(f"Saved to: {output_file}")
 
 
-# --- Usage example ---
-input_path = "./output/ScannetppIphone_MultilevelCategories_20260124_sampled_MCA_Multistage_stage2_gemini-3-flash-preview_CoT_Cleaned_rel_ratio_1.00.json"
-output_path = "./output/ScannetppIphone_MultilevelCategories_20260124_sampled_MCA_Multistage_stage2_gemini-3-flash-preview_CoT_Cleaned_rel_ratio_1.00_no_system.json"
+if __name__ == "__main__":
+    import argparse
 
-if os.path.exists(input_path):
-    clean_instruction_from_json(input_path, output_path)
-else:
-    print(f"File not found: {input_path}")
+    parser = argparse.ArgumentParser(
+        description="从 CoT 数据的 user 消息中删除 step-by-step 系统提示（'no system' 消融变体）")
+    parser.add_argument("--input-file",
+                        default="./output/ScannetppIphone_MultilevelCategories_20260124_sampled_MCA_Multistage_stage2_gemini-3-flash-preview_CoT_Cleaned_rel_ratio_1.00.json",
+                        help="cot_jsonl2swift 清洗后的输入文件")
+    parser.add_argument("--output-file",
+                        default="./output/ScannetppIphone_MultilevelCategories_20260124_sampled_MCA_Multistage_stage2_gemini-3-flash-preview_CoT_Cleaned_rel_ratio_1.00_no_system.json",
+                        help="去除 system 提示后的输出文件")
+    args = parser.parse_args()
+
+    if os.path.exists(args.input_file):
+        clean_instruction_from_json(args.input_file, args.output_file)
+    else:
+        print(f"File not found: {args.input_file}")

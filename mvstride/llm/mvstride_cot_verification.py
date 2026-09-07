@@ -686,6 +686,16 @@ class APIDataProcesser:
         return total_metrics
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="宽松评审 LLM 对照 GT 中间 QA 校验 CoT 质量")
+    parser.add_argument("--input-file", default='./human_eval/cot_with_original_aligned_sampled_200.json',
+                        help="match_input_output + human_eval_cot_sampling 的输出")
+    parser.add_argument("--output-dir", default='./output', help="输出目录")
+    parser.add_argument("--image-base-dir", default='/path/to/data/scannetpp_sampled_modified',
+                        help="图像基目录（json 内 images 取末三级路径拼接于其后）")
+    args = parser.parse_args()
+
     # Credentials and proxy are read from the environment; do not hard-code secrets.
     username = os.environ.get("API_USERNAME")
     password = os.environ.get("API_PASSWORD")
@@ -695,9 +705,9 @@ if __name__ == "__main__":
         os.environ["https_proxy"] = f"http://{username}:{password}@{proxy_url}:8080"
 
     my_config = {
-        'input_file_path': '/path/to/data/human_eval/cot_with_original_aligned_sampled_200.json',
-        'output_file_dir': './output',
-        'image_base_path': '/path/to/data/scannetpp_sampled_modified',
+        'input_file_path': args.input_file,
+        'output_file_dir': args.output_dir,
+        'image_base_path': args.image_base_dir,
         'model_name': 'gpt-5.5',
         'thread_num': 5,
         'batch_size': 10

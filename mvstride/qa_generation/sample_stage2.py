@@ -87,7 +87,7 @@ if __name__ == "__main__":
 
     # input file list
     datasets = [
-        '../api/output/ScannetppIphone_MultilevelCategories_20260124_sampled_MCA_Multistage_stage2_gemini-3-flash-preview_CoT_Cleaned_rel.json'
+        './output/ScannetppIphone_MultilevelCategories_20260124_sampled_MCA_Multistage_stage2_gemini-3-flash-preview_CoT_Cleaned_rel.json'
     ]
 
     for ds in datasets:

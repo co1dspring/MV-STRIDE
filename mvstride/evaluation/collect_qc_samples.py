@@ -134,9 +134,9 @@ def collect_qc_data(base_path, local_img_base, output_dir):
 # --- Usage example ---
 if __name__ == "__main__":
     config = {
-        "base_path": "../QA_jsons_Infinigen_MultilevelCategories_sampled_MCA_Multistage/atomic",  # path containing level_1~3
-        "local_img_base": "../infinigen_metadata_ver2",  # real local image base directory
-        "output_dir": "./qc_task_v1"  # directory for sampling results
+        "base_path": "./data/QA_jsons_Infinigen_MultilevelCategories_sampled_MCA_Multistage/atomic",  # 含 level_1~3 的 QA 输出目录
+        "local_img_base": "./data/infinigen",  # 真实图像基目录（images 按 saved_scenes/<scene>/<file> 拼接）
+        "output_dir": "./qc_task_v1"  # QC 采样结果目录
     }
 
     collect_qc_data(**config)

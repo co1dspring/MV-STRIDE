@@ -1,15 +1,17 @@
 # -*- coding = utf-8 -*-
 import json
 import re
+import argparse
 from pathlib import Path
 from collections import Counter
 import pandas as pd
 
 # =========================================================
-# Path configuration (only need to configure your result file path)
+# Path configuration (default result file path; override with --result-path)
 # =========================================================
-RESULT_PATH = "../api/output/cross_view_dependency_sampled_multiview_1000_gemini-3-flash-preview_CoT.jsonl"
-RESULT_PATH = "../api/output/cross_view_dependency_sampled_singleview_1000_gemini-3-flash-preview_CoT.jsonl"
+# 跨视角依赖消融的两条测试臂：multiview / singleview（1000 条），
+# 实际文件随模型名变化，运行时可任意指定。
+RESULT_PATH = "./output/cross_view_dependency_sampled_singleview_1000_gemini-3-flash-preview_CoT.jsonl"
 
 
 # =========================================================
@@ -39,7 +41,14 @@ def write_json(data, file_path, indent=4):
 
 if __name__ == '__main__':
 
-    result_path = Path(RESULT_PATH)
+    parser = argparse.ArgumentParser(description="按类别计算多选准确率（相对 Random/Majority 基线）")
+    parser.add_argument("--result-path", default=RESULT_PATH,
+                        help="推理结果 jsonl（multiview/singleview 测试臂的运行产物）")
+    args = parser.parse_args()
+
+    result_path = Path(args.result_path)
+    if not result_path.exists():
+        raise SystemExit(f"结果文件不存在：{result_path}\n请用 --result-path 指定推理输出文件。")
     save_path = result_path.parent / (result_path.stem + "_metrics.json")
 
     # =====================================================

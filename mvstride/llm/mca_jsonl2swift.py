@@ -45,9 +45,16 @@ def convert_jsonl_to_json(input_path, output_path):
 
 
 if __name__ == "__main__":
-    # Input and output paths.
-    input_file = './output/SAT_stage3_grpo_sampled_gemini-3-flash-preview_MCA_balanced.jsonl'
-    output_file = './output/SAT_stage3_grpo_sampled_gemini-3-flash-preview_MCA_balanced.json'
+    import argparse
+
+    parser = argparse.ArgumentParser(description="去掉 MCA 冗余元数据 → 训练用 json")
+    parser.add_argument("--input-file",
+                        default='./output/SAT_stage3_grpo_sampled_gemini-3-flash-preview_MCA_balanced.jsonl',
+                        help="rebalance_options.py 的输出")
+    parser.add_argument("--output-file",
+                        default='./output/SAT_stage3_grpo_sampled_gemini-3-flash-preview_MCA_balanced.json',
+                        help="清洗后的输出文件")
+    args = parser.parse_args()
 
     # Run the conversion.
-    convert_jsonl_to_json(input_file, output_file)
+    convert_jsonl_to_json(args.input_file, args.output_file)

@@ -87,7 +87,8 @@ def stratified_sample_json(input_file_path, output_file_path, target_total=200):
 # ==================== Usage example ====================
 if __name__ == "__main__":
     # Replace with your actual file paths
-    input_json = "../api/output/cot_with_original_aligned.json"
+    # 输入 = mvstride/llm/match_input_output.py 的默认输出（./output/cot_with_original_aligned.json）
+    input_json = "./output/cot_with_original_aligned.json"
     output_json = "./human_eval/cot_with_original_aligned_sampled_200.json"
 
     # Run the sampling

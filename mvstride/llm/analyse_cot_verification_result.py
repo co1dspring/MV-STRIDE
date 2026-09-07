@@ -137,7 +137,12 @@ def analyze_verification_results(jsonl_path: str):
 
 
 if __name__ == "__main__":
-    # Replace with the actual saved jsonl result path.
-    RESULT_FILE_PATH = "./output/cot_with_original_aligned_sampled_200_gpt-5.5_CoT.jsonl"
+    import argparse
 
-    analyze_verification_results(RESULT_FILE_PATH)
+    parser = argparse.ArgumentParser(description="汇总 CoT 验证结果标签（mvstride_cot_verification.py 的输出）")
+    parser.add_argument("--result-file",
+                        default="./output/cot_with_original_aligned_sampled_200_gpt-5.5_CoT.jsonl",
+                        help="验证脚本输出的 jsonl")
+    args = parser.parse_args()
+
+    analyze_verification_results(args.result_file)

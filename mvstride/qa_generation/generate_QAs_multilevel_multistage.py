@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os, sys
+import argparse
 import random
 import json
 import logging
@@ -44,10 +45,13 @@ class SceneQAGenerator:
         # Read the config file
         self.config = load_config(Path(config_path))
 
-        # Config files live in configs/qa/ while the generator may be launched from
-        # any working directory. Resolve every relative path against the config file's
-        # own directory (not the CWD) so the config stays portable.
+        # Config files live in configs/qa/ (shipped layout <repo-root>/configs/qa/).
+        # Resolve every relative path against the repo root (not the CWD), so
+        # values like "data/infinigen/saved_scenes" work from any working directory.
         self.config_dir = Path(config_path).resolve().parent
+        path_base = self.config_dir
+        if self.config_dir.name == "qa" and self.config_dir.parent.name == "configs":
+            path_base = self.config_dir.parent.parent
 
         def _cfg_path(key: str, *, fmt: bool = False, as_str: bool = False):
             v = self.config.get(key, "")
@@ -55,7 +59,7 @@ class SceneQAGenerator:
                 v = v.format(VERSION_NAME=self.version_name or "")
             p = Path(v)
             if not p.is_absolute():
-                p = self.config_dir / p
+                p = path_base / p
             return str(p) if as_str else p
 
         # Load paths
@@ -2549,16 +2553,22 @@ class SceneQAGenerator:
 
 
 if __name__ == "__main__":
-    # CONFIG_PATH = './configs/qa/qa_config_infinigen.json'
-    # CONFIG_PATH = './configs/qa/qa_config_scannetpp.json'
-    # CONFIG_PATH = './configs/qa/qa_config_infinigen_sparse.json'
-    # CONFIG_PATH = './configs/qa/qa_config_scannetpp_sparse.json'
-    # CONFIG_PATH = './configs/qa/qa_config_infinigen_ablation.json'
-    CONFIG_PATH = './configs/qa/qa_config_scannetpp_ablation.json'
+    parser = argparse.ArgumentParser(
+        description="Run the multilevel/multistage QA generator for one config under configs/qa/."
+    )
+    parser.add_argument(
+        "--config",
+        type=str,
+        default="./configs/qa/qa_config_infinigen.json",
+        help="Path to the QA config JSON (e.g. configs/qa/qa_config_scannetpp.json). "
+             "Relative paths are resolved against the current working directory; run from the repo root. "
+             "Default: %(default)s",
+    )
+    args = parser.parse_args()
 
     # Run the generator
     generator = SceneQAGenerator(
-        config_path=CONFIG_PATH
+        config_path=args.config
     )
     # generator.save_all_categories()
     generator.process_all_scenes()
