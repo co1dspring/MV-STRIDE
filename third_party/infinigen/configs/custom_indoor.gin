@@ -1,0 +1,37 @@
+BlueprintSolidifier.enable_open=False
+restrict_solving.solve_max_rooms=2
+
+# 1. Number of camera rigs = 10
+camera.spawn_camera_rigs.n_camera_rigs = 10
+
+# 2. Manually set two camera positions (well separated) and height (1.5 m)
+# camera.spawn_camera_rigs.camera_rig_config = [
+#    {'loc': (-6, 0, 1.5), 'rot_euler': (1.5708, 0, 0.5236)},    # frontal-left, yaw 30 deg
+#    {'loc': (6, 0, 1.5), 'rot_euler': (1.5708, 0, 2.6180)}    # frontal-right, yaw 150 deg (complements left view)
+#]
+# camera.spawn_camera_rigs.camera_rig_config = [
+#     {'loc': (0,0,0), 'rot_euler': (0,0,0)},  # initial value irrelevant; overwritten by manual code
+#     {'loc': (6, 0, 1.5), 'rot_euler': (1.5708, 0, 2.6180)}
+#]
+camera.spawn_camera_rigs.camera_rig_config = [{'loc': (0,0,0), 'rot_euler': (0,0,0)}]
+
+# 3. Clamp camera altitude range (avoid getting too close to the ceiling)
+camera.camera_pose_proposal.altitude = ("clip_gaussian", 1.5, 0.5, 0.3, 2.0)
+
+# 4. Encourage view diversity when selecting camera poses
+compute_base_views.min_candidates_ratio = 20
+compute_poses.min_candidates_ratio = 1
+keep_cam_pose_proposal.min_terrain_distance = 0.3
+# compute_base_views.n_views = 60
+compute_base_views.max_tries = 10000
+configure_cameras.mvs_radius = ("uniform", 0.5, 5)
+
+full/render_image.passes_to_save = []
+
+execute_tasks.generate_resolution = (640, 480)
+execute_tasks.fps = 24
+get_sensor_coords.H = 480
+get_sensor_coords.W = 640
+
+configure_cameras.mvs_setting = False
+

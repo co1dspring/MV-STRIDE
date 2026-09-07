@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
+from __future__ import annotations  # Python 3.8 兼容：避免注解在 import 时求值
+import argparse
 import os
 import json
+import shutil
 from pathlib import Path
 from tqdm import tqdm
 import logging
@@ -31,7 +34,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def get_image_size_pillow(img_path: str or Path) -> tuple[int, int] or None:
+def get_image_size_pillow(img_path: Optional[Union[str, Path]] = None) -> tuple[int, int] or None:
+    if img_path is None:
+        logger.warning("原始图像不存在，使用默认尺寸 (1920, 1080)")
+        return (1920, 1080)  # 默认值防止崩溃
     img_path = str(img_path)
     try:
         with Image.open(img_path) as img:
@@ -42,10 +48,12 @@ def get_image_size_pillow(img_path: str or Path) -> tuple[int, int] or None:
 
 
 class ScanNetPPDataProcessor:
-    def __init__(self, raw_root: str = RAW_ROOT_DIR, new_anno_root: str = NEW_ANNO_ROOT, output_root: str = OUTPUT_ROOT_DIR):
+    def __init__(self, raw_root: str = RAW_ROOT_DIR, new_anno_root: str = NEW_ANNO_ROOT, output_root: str = OUTPUT_ROOT_DIR,
+                 copy_images: bool = True):
         self.raw_root = Path(raw_root)
         self.new_anno_root = Path(new_anno_root)
         self.output_root = Path(output_root)
+        self.copy_images = copy_images
         self.output_root.mkdir(parents=True, exist_ok=True)
         # Use the folders under the new annotation directory as scene sources
         self.scene_dirs = [d for d in self.new_anno_root.iterdir() if d.is_dir()]
@@ -100,7 +108,21 @@ class ScanNetPPDataProcessor:
         except:
             return None
 
-    def _process_annotation(self, raw_data, scene_id, data_type) -> dict:
+    def _resolve_raw_image(self, scene_id: str, data_type: str, img_filename: str) -> Optional[Path]:
+        # 原始图像可能位于两处：raw_root（历史抽帧目录为 *.jpg.jpg 双后缀）、
+        # anno_root（preprocess_iphone.py 带 --no-images 之外会把帧图拷到 metadata 旁）
+        candidates = [
+            self.raw_root / scene_id / data_type / img_filename,
+            self.raw_root / scene_id / data_type / (img_filename + ".jpg"),
+            self.new_anno_root / scene_id / data_type / img_filename,
+        ]
+        for candidate in candidates:
+            if candidate.exists():
+                return candidate
+        logger.warning(f"找不到原始图像：{scene_id}/{data_type}/{img_filename}")
+        return None
+
+    def _process_annotation(self, raw_data, scene_id, data_type, dst_images_dir: Optional[Path] = None) -> dict:
         scene_objs = {}
         scene_objs_loc_list = {}
         scene_objs_id = 0
@@ -112,15 +134,20 @@ class ScanNetPPDataProcessor:
         }
 
         for img in raw_data:
-            # The image path still points to the raw RAW_ROOT_DIR to get the size
-            img_filename = img.get("image_path", "") + '.jpg'
-            raw_img_path = self.raw_root / scene_id / data_type / Path(img_filename).name
+            # 解析出与 scene_metadata.json 同名的原始帧图
+            img_filename = Path(img.get("image_path", "")).name
+            raw_img_path = self._resolve_raw_image(scene_id, data_type, img_filename)
 
             size = get_image_size_pillow(raw_img_path)
             W, H = size if size else (1920, 1080)
 
             camera_name = Path(img.get("image_path", "")).stem
             new_image_path = f"{scene_id}_{data_type}/images/{Path(img.get('image_path', '')).name}"
+            if dst_images_dir is not None and raw_img_path is not None:
+                dst_img = dst_images_dir / img_filename
+                if not dst_img.exists():
+                    dst_img.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(raw_img_path, dst_img)
 
             c2w_colmap = np.linalg.inv(np.array(img.get("extrinsic", [])))
             R_conversion = np.array([[1, 0, 0], [0, -1, 0], [0, 0, -1]]) if data_type == "iphone" else np.array([[-1, 0, 0], [0, 1, 0], [0, 0, -1]])
@@ -190,7 +217,8 @@ class ScanNetPPDataProcessor:
         # 2. Process
         raw_anno = self._load_json(src_anno_path)
         if raw_anno:
-            modified_anno = self._process_annotation(raw_anno, scene_id, data_type)
+            dst_images_dir = dst_scene_dir / "images" if self.copy_images else None
+            modified_anno = self._process_annotation(raw_anno, scene_id, data_type, dst_images_dir)
             if self._save_json(modified_anno, dst_anno_path):
                 logger.info(f"场景 {scene_id} 处理完成并保存至 {dst_anno_path}")
         else:
@@ -202,5 +230,21 @@ class ScanNetPPDataProcessor:
 
 
 if __name__ == "__main__":
-    processor = ScanNetPPDataProcessor()
+    parser = argparse.ArgumentParser(
+        description="把 scene_metadata.json 转为 Infinigen 统一 schema 的 scene_metadata_new.json，并拷贝帧图到输出目录")
+    parser.add_argument("--raw-root", default=RAW_ROOT_DIR,
+                        help="原始帧图目录（含 <scene>/iphone/*.jpg；兼容历史 *.jpg.jpg 双后缀）")
+    parser.add_argument("--anno-root", default=NEW_ANNO_ROOT,
+                        help="scene_metadata.json 所在目录（preprocess_iphone.py 的输出）")
+    parser.add_argument("--output-root", default=OUTPUT_ROOT_DIR,
+                        help="输出目录，按 <scene>_iphone/ 组织，与 QA 配置对齐")
+    parser.add_argument("--no-images", action="store_true", default=False,
+                        help="不把帧图拷贝到 <scene>_iphone/images/（默认会拷贝）")
+    args = parser.parse_args()
+    processor = ScanNetPPDataProcessor(
+        raw_root=args.raw_root,
+        new_anno_root=args.anno_root,
+        output_root=args.output_root,
+        copy_images=not args.no_images,
+    )
     processor.run()

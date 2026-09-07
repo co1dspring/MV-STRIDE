@@ -33,7 +33,7 @@ class MSR_QATypeConfig(NamedTuple):
     sampling_rate: float
 
 class SceneQAGenerator:
-    def __init__(self, config_path: str = "./qa_config.json"):
+    def __init__(self, config_path: str = "./configs/qa/qa_config_infinigen.json"):
         """
         Initialize the scene QA generator.
         :param base_dir: scene parent directory
@@ -44,15 +44,29 @@ class SceneQAGenerator:
         # Read the config file
         self.config = load_config(Path(config_path))
 
+        # Config files live in configs/qa/ while the generator may be launched from
+        # any working directory. Resolve every relative path against the config file's
+        # own directory (not the CWD) so the config stays portable.
+        self.config_dir = Path(config_path).resolve().parent
+
+        def _cfg_path(key: str, *, fmt: bool = False, as_str: bool = False):
+            v = self.config.get(key, "")
+            if fmt:
+                v = v.format(VERSION_NAME=self.version_name or "")
+            p = Path(v)
+            if not p.is_absolute():
+                p = self.config_dir / p
+            return str(p) if as_str else p
+
         # Load paths
-        self.source_data_dir = Path(self.config.get('source_data_dir'))
+        self.source_data_dir = _cfg_path('source_data_dir')
         self.version_name = self.config.get('version_name')
-        self.output_dir = Path(self.config.get('output_dir').format(VERSION_NAME=self.version_name))  # for saving per-question-type files
-        self.training_environment_base_dir = self.config.get('training_environment_base_dir')
+        self.output_dir = _cfg_path('output_dir', fmt=True)  # for saving per-question-type files
+        self.training_environment_base_dir = _cfg_path('training_environment_base_dir', as_str=True)
         self.metadata_filename = self.config.get('metadata_filename')
-        self.qa_templates_path = Path(self.config.get('qa_templates_path'))
+        self.qa_templates_path = _cfg_path('qa_templates_path')
         self.data_source = self.config.get('data_source')
-        self.qa_dependency_tree_path = self.config.get('qa_dependency_tree_path')
+        self.qa_dependency_tree_path = _cfg_path('qa_dependency_tree_path', as_str=True)
 
         # Load numeric parameters
         self.camera_count = self.config.get('camera_count')
@@ -2535,12 +2549,12 @@ class SceneQAGenerator:
 
 
 if __name__ == "__main__":
-    # CONFIG_PATH = './qa_config_infinigen.json'
-    # CONFIG_PATH = './qa_config_scannetpp.json'
-    # CONFIG_PATH = './qa_config_infinigen_sparse.json'
-    # CONFIG_PATH = './qa_config_scannetpp_sparse.json'
-    # CONFIG_PATH = './qa_config_infinigen_ablation.json'
-    CONFIG_PATH = './qa_config_scannetpp_ablation.json'
+    # CONFIG_PATH = './configs/qa/qa_config_infinigen.json'
+    # CONFIG_PATH = './configs/qa/qa_config_scannetpp.json'
+    # CONFIG_PATH = './configs/qa/qa_config_infinigen_sparse.json'
+    # CONFIG_PATH = './configs/qa/qa_config_scannetpp_sparse.json'
+    # CONFIG_PATH = './configs/qa/qa_config_infinigen_ablation.json'
+    CONFIG_PATH = './configs/qa/qa_config_scannetpp_ablation.json'
 
     # Run the generator
     generator = SceneQAGenerator(

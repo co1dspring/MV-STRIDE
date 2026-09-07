@@ -536,12 +536,12 @@
 
 
 if __name__ == "__main__":
-    # CONFIG_PATH = './qa_config_infinigen.json'
-    # CONFIG_PATH = './qa_config_scannetpp.json'
-    # CONFIG_PATH = './qa_config_infinigen_sparse.json'
-    # CONFIG_PATH = './qa_config_scannetpp_sparse.json'
-    # CONFIG_PATH = './qa_config_infinigen_ablation.json'
-    CONFIG_PATH = './qa_config_scannetpp_ablation.json'
+    # CONFIG_PATH = './configs/qa/qa_config_infinigen.json'
+    # CONFIG_PATH = './configs/qa/qa_config_scannetpp.json'
+    # CONFIG_PATH = './configs/qa/qa_config_infinigen_sparse.json'
+    # CONFIG_PATH = './configs/qa/qa_config_scannetpp_sparse.json'
+    # CONFIG_PATH = './configs/qa/qa_config_infinigen_ablation.json'
+    CONFIG_PATH = './configs/qa/qa_config_scannetpp_ablation.json'
 
     # Run the generator
     generator = SceneQAGenerator(
