@@ -173,24 +173,20 @@
       font-size: 1.05rem;
     }
 
-    .media-placeholder {
-      min-height: 370px;
-      margin: 26px 0 10px;
-      display: grid;
-      place-items: center;
-      padding: 28px;
-      border: 2px dashed #b8c8df;
+    .pdf-figure {
+      margin: 26px auto 10px;
+      border: 1px solid var(--border);
       border-radius: var(--radius);
-      background: linear-gradient(135deg, #f7faff, #ffffff);
-      color: #718099;
-      text-align: center;
+      background: #ffffff;
+      box-shadow: var(--shadow);
+      overflow: hidden;
     }
 
-    .media-placeholder strong {
+    .pdf-figure embed {
       display: block;
-      margin-bottom: 5px;
-      color: var(--primary-dark);
-      font-size: 1.08rem;
+      width: 100%;
+      height: 100%;
+      border: 0;
     }
 
     .caption {
@@ -500,10 +496,6 @@
       .stats {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-
-      .media-placeholder {
-        min-height: 260px;
-      }
     }
 
     @media (max-width: 560px) {
@@ -572,11 +564,8 @@
 
   <main class="container">
     <section aria-label="Teaser">
-      <div class="media-placeholder">
-        <div>
-          <strong>Teaser image placeholder</strong>
-          Insert the paper overview figure here: <code>assets/teaser.png</code>
-        </div>
+      <div class="pdf-figure" style="aspect-ratio: 3.29 / 1;">
+        <embed src="assets/teaser.pdf" type="application/pdf" title="Teaser overview figure" />
       </div>
       <p class="caption">MV-STRIDE organizes multi-view spatial reasoning into three capability levels with explicit cross-level dependencies.</p>
     </section>
@@ -630,11 +619,8 @@
         The pipeline transforms synthetic and reconstructed 3D scenes into geometrically grounded, hierarchical multi-view QA data and long-chain reasoning supervision.
       </p>
 
-      <div class="media-placeholder">
-        <div>
-          <strong>Construction pipeline placeholder</strong>
-          Insert the paper pipeline figure here: <code>assets/pipeline.png</code>
-        </div>
+      <div class="pdf-figure" style="aspect-ratio: 1.99 / 1;">
+        <embed src="assets/pipeline.pdf" type="application/pdf" title="Dataset construction pipeline figure" />
       </div>
 
       <div class="steps">
@@ -793,11 +779,8 @@
       <p class="section-lead">
         Cold-start and RL training encourage the model to produce structured reasoning that progresses from view-level perception to cross-view modeling and high-level spatial inference.
       </p>
-      <div class="media-placeholder">
-        <div>
-          <strong>Qualitative result placeholder</strong>
-          Insert a representative reasoning example here: <code>assets/qualitative.png</code>
-        </div>
+      <div class="pdf-figure" style="aspect-ratio: 2.50 / 1;">
+        <embed src="assets/results.pdf" type="application/pdf" title="Qualitative reasoning example" />
       </div>
     </section>
 
