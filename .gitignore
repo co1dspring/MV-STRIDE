@@ -16,6 +16,9 @@ claude_log.md
 data/*
 !data/README.md
 
+# 论文 PDF（发布走 GitHub Releases 附件，不入 git 历史）
+pdf/
+
 # ---------- 环境与凭据 ----------
 # 环境变量 / 密钥文件（防止误提交）
 .env
