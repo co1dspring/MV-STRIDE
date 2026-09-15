@@ -181,3 +181,4 @@ python mvstride/qa_generation/generate_QAs_multilevel_multistage.py \
 - [Qwen2.5-VL](https://github.com/QwenLM/Qwen2.5-VL) — 基座视觉语言模型
 - [Qwen3-VL](https://github.com/QwenLM/Qwen3-VL) — 基座视觉语言模型
 - [ms-swift](https://github.com/modelscope/ms-swift) — 训练 / 评测框架
+- [MMSI-Bench](https://github.com/InternRobotics/MMSI-Bench) — 多视图空间智能评测基准

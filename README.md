@@ -215,3 +215,4 @@ are in [`configs/qa/README.md`](configs/qa/README.md).
 - [Qwen2.5-VL](https://github.com/QwenLM/Qwen2.5-VL) — base vision-language model
 - [Qwen3-VL](https://github.com/QwenLM/Qwen3-VL) — base vision-language model
 - [ms-swift](https://github.com/modelscope/ms-swift) — training / evaluation framework
+- [MMSI-Bench](https://github.com/InternRobotics/MMSI-Bench) — multi-view spatial-intelligence benchmark used for evaluation
